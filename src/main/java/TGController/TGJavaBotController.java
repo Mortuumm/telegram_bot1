@@ -1,5 +1,6 @@
 package TGController;
 
+import DataBaseLogic.DataBaseConnection;
 import TGLogic.SendMessageService;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -8,7 +9,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
+import java.sql.SQLException;
 import java.util.List;
 
 import static TGConstant.Constant.*;
@@ -18,46 +19,49 @@ public class TGJavaBotController extends TelegramLongPollingBot {
     private static final String USERNAME ="DiplomJavaStudy_Bot";
     public TGJavaBotController(DefaultBotOptions options) { super(options); }
 
+    public Integer user_id = 1;
+    public  void updateMetrics(String metric,int number,Update update){
+        try {
+            DataBaseConnection.updateDb("UPDATE test_bd.test_table " +
+                    "SET "+metric+"  = '" +number+"' " +
+                    "ORDER BY idtest_table DESC LIMIT 1");
+            System.out.println(number);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+    public  void insertDiseases(String diseas,Update update){
+        try {
+            DataBaseConnection.updateDb("INSERT INTO test_bd.test_table " +
+                    "(test_bd.test_table.client_message, " +
+                    "test_bd.test_table.diseas_test)" +
+                    "VALUES('" + user_id + "','" +diseas+"' ) ");
+            System.out.println(user_id);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
     @Override
     public void onUpdateReceived(Update update) {
-        /*
-        update.getUpdateId();
-        chat_id = update.getMessage().getChatId();
-        SendMessage sendMessage = new SendMessage().setChatId(update.getMessage().getChatId());
-        String text = update.getMessage().getText();
-        sendMessage.setReplyMarkup(tgMessageLogic.getInlineKeyboardMarkup());
-
-        System.out.println(update);
-
-        try{
-
-            sendMessage.setText(tgMessageLogic.getMessage(text));
-            execute(sendMessage);
-
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-         */
 
         SendMessageService sendMessageService = new SendMessageService();
         if(update.hasMessage() && update.getMessage().hasText()){
             System.out.println(update.getMessage().getFrom().getId());
+            System.out.println(update.getMessage().getFrom());
+            user_id = update.getMessage().getFrom().getId();
             switch (update.getMessage().getText()) {
                 case START ->
-                        //executeMessage(sendMessageService.createPhoneMessage(update));
                         executeMessage(sendMessageService.createGreetingInformation(update));
                 case START_PLANNING ->
-                        //executeMessage(sendMessageService.createPlanningMessage(update));
                         executeMessage(sendMessageService.createTabletsInstruction(update));
-                case END_PLANNING -> executeMessage(sendMessageService.createEndMessage(update));
                 case HELP -> executeMessage(sendMessageService.createHelpMessage(update));
                 case SHOW_DEALS -> {
                     executeMessage(sendMessageService.createShowMessage(update));
                     executePhoto(sendMessageService.createShowPhoto(update));
                 }
-                case BACK -> executeMessage(sendMessageService.createBackMessage(update));
             }
         }
+
         if(update.hasCallbackQuery()){
             String callDate = update.getCallbackQuery().getData();
 
@@ -109,273 +113,397 @@ public class TGJavaBotController extends TelegramLongPollingBot {
                             "для повторного тестирования нажмите кнопку начать");
             System.out.println(callDate);
             switch (callDate) {
-                case "inf-0" ->
-                   /*SendMessage sendMessage = new SendMessage().setChatId(update.getCallbackQuery().getMessage().getChatId());
-                    sendMessage.setText("Ye");
-                   try {
-                        execute(sendMessage);
-                   } catch (TelegramApiException e) {
-                        e.printStackTrace();
-                  }*/
-                        //executeMessage(sendMessageService.sendAnswerCallBack("Признаки до начала лечения",false,update.getCallbackQuery()));
-                        executeMessage(meningocMessage.get(0));
-                case "0-1" -> {
+                case "inf-0" :
+                    executeMessage(meningocMessage.get(0));
+                    insertDiseases(MENINGOC,update);
+                break;
+                case "0-1" : {
                     System.out.println("-9");
                     executeMessage(meningocMessage1);
+                    updateMetrics("metric1",-9,update);
                 }
-                case "0-2" -> {
+                break;
+                case "0-2" : {
                     System.out.println("-3");
                     executeMessage(meningocMessage1);
+                    updateMetrics("metric1",-3,update);
                 }
-                case "0-3" -> {
+                break;
+                case "0-3" : {
                     System.out.println("+3");
                     executeMessage(meningocMessage1);
+                    updateMetrics("metric1",3,update);
                 }
-                case "0-4" -> {
+                break;
+                case "0-4" :{
                     System.out.println("+4");
                     executeMessage(meningocMessage1);
+                    updateMetrics("metric1",4,update);
                 }
-                case "0-5" -> {
+                break;
+                case "0-5": {
                     System.out.println("+9");
                     executeMessage(meningocMessage1);
+                    updateMetrics("metric1",9,update);
                 }
-                case "0-6" -> {
+                break;
+                case "0-6": {
                     System.out.println("+10");
                     executeMessage(meningocMessage1);
+                    updateMetrics("metric1",10,update);
                 }
-                case "1-1" -> {
+                break;
+                case "1-1": {
                     System.out.println("-8");
                     executeMessage(meningocMessage2);
+                    updateMetrics("metric2",-8,update);
                 }
-                case "1-2" -> {
+                break;
+                case "1-2": {
                     System.out.println("-4");
                     executeMessage(meningocMessage2);
+                    updateMetrics("metric2",-4,update);
                 }
-                case "1-3" -> {
+                break;
+                case "1-3": {
                     System.out.println("-3");
                     executeMessage(meningocMessage2);
+                    updateMetrics("metric2",-3,update);
                 }
-                case "1-4" -> {
+                break;
+                case "1-4": {
                     System.out.println("+5");
                     executeMessage(meningocMessage2);
+                    updateMetrics("metric2",5,update);
                 }
-                case "2-1" -> {
+                break;
+                case "2-1": {
                     System.out.println("-4");
                     executeMessage(meningocMessage3);
+                    updateMetrics("metric3",-4,update);
                 }
-                case "2-2" -> {
+                break;
+                case "2-2": {
                     System.out.println("+6");
                     executeMessage(meningocMessage3);
+                    updateMetrics("metric3",6,update);
                 }
-                case "2-3" -> {
+                break;
+                case "2-3": {
                     System.out.println("+8");
                     executeMessage(meningocMessage3);
+                    updateMetrics("metric3",8,update);
                 }
-                case "3-1" -> {
+                break;
+                case "3-1": {
                     System.out.println("0");
                     executeMessage(meningocMessage4);
+                    updateMetrics("metric4",0,update);
                 }
-                case "3-2" -> {
+                break;
+                case "3-2": {
                     System.out.println("+6");
                     executeMessage(meningocMessage4);
+                    updateMetrics("metric4",6,update);
                 }
-                case "4-1" -> {
+                break;
+                case "4-1": {
                     System.out.println("-7");
                     executeMessage(meningocMessage5);
+                    updateMetrics("metric5",-7,update);
                 }
-                case "4-2" -> {
+                break;
+                case "4-2": {
                     System.out.println("+2");
                     executeMessage(meningocMessage5);
+                    updateMetrics("metric5",2,update);
                 }
-                case "4-3" -> {
+                break;
+                case "4-3": {
                     System.out.println("+5");
                     executeMessage(meningocMessage5);
+                    updateMetrics("metric5",5,update);
                 }
-                case "5-1" -> {
+                break;
+                case "5-1": {
                     System.out.println("-3");
                     executeMessage(meningocMessage6);
+                    updateMetrics("metric6",-3,update);
                 }
-                case "5-2" -> {
+                break;
+                case "5-2":{
                     System.out.println("-2");
                     executeMessage(meningocMessage6);
+                    updateMetrics("metric6",-2,update);
                 }
-                case "5-3" -> {
+                break;
+                case "5-3": {
                     System.out.println("0");
                     executeMessage(meningocMessage6);
+                    updateMetrics("metric6",0,update);
                 }
-                case "5-4" -> {
+                break;
+                case "5-4": {
                     System.out.println("+5");
                     executeMessage(meningocMessage6);
+                    updateMetrics("metric6",5,update);
                 }
-                case "6-1" -> {
+                break;
+                case "6-1": {
                     System.out.println("-1");
                     executeMessage(meningocMessage7);
+                    updateMetrics("metric7",-1,update);
                 }
-                case "6-2" -> {
+                break;
+                case "6-2": {
                     System.out.println("+5");
                     executeMessage(meningocMessage7);
+                    updateMetrics("metric7",5,update);
                 }
-                case "7-1" -> {
+                break;
+                case "7-1": {
                     System.out.println("-3");
                     executeMessage(meningocMessage8);
+                    updateMetrics("metric8",-3,update);
                 }
-                case "7-2" -> {
+                break;
+                case "7-2": {
                     System.out.println("-4");
                     executeMessage(meningocMessage8);
+                    updateMetrics("metric8",-4,update);
                 }
-                case "inf-1" -> executeMessage(asthmaMessage);
-                case "A0-1" -> {
+                break;
+                case "inf-1": executeMessage(asthmaMessage);
+                    insertDiseases(ASTHMA,update);
+                break;
+                case "A0-1": {
                     System.out.println("-1");
                     executeMessage(asthmaMessage1);
+                    updateMetrics("metric1",-1,update);
                 }
-                case "A0-2" -> {
+                break;
+                case "A0-2":{
                     System.out.println("+2");
                     executeMessage(asthmaMessage1);
+                    updateMetrics("metric1",2,update);
                 }
-                case "A0-3" -> {
+                break;
+                case "A0-3":{
                     System.out.println("+5");
                     executeMessage(asthmaMessage1);
+                    updateMetrics("metric1",5,update);
                 }
-                case "A1-1" -> {
+                break;
+                case "A1-1": {
                     System.out.println("-1");
                     executeMessage(asthmaMessage2);
+                    updateMetrics("metric2",-1,update);
                 }
-                case "A1-2" -> {
+                break;
+                case "A1-2": {
                     System.out.println("+1");
                     executeMessage(asthmaMessage2);
+                    updateMetrics("metric2",1,update);
                 }
-                case "A1-3" -> {
+                break;
+                case "A1-3":{
                     System.out.println("+3");
                     executeMessage(asthmaMessage2);
+                    updateMetrics("metric2",3,update);
                 }
-                case "A2-1" -> {
+                break;
+                case "A2-1": {
                     System.out.println("-1");
                     executeMessage(asthmaMessage3);
+                    updateMetrics("metric3",-1,update);
                 }
-                case "A2-2" -> {
+                break;
+                case "A2-2": {
                     System.out.println("+1");
                     executeMessage(asthmaMessage3);
+                    updateMetrics("metric3",1,update);
                 }
-                case "A2-3" -> {
+                break;
+                case "A2-3": {
                     System.out.println("+3");
                     executeMessage(asthmaMessage3);
+                    updateMetrics("metric3",3,update);
                 }
-                case "A3-1" -> {
+                break;
+                case "A3-1": {
                     System.out.println("-2");
                     executeMessage(asthmaMessage4);
+                    updateMetrics("metric4",-2,update);
                 }
-                case "A3-2" -> {
+                break;
+                case "A3-2": {
                     System.out.println("+1");
                     executeMessage(asthmaMessage4);
+                    updateMetrics("metric4",1,update);
                 }
-                case "A3-3" -> {
+                break;
+                case "A3-3": {
                     System.out.println("+3");
                     executeMessage(asthmaMessage4);
+                    updateMetrics("metric4",3,update);
                 }
-                case "A4-1" -> {
+                break;
+                case "A4-1": {
                     System.out.println("+2");
                     executeMessage(asthmaMessage5);
+                    updateMetrics("metric5",2,update);
                 }
-                case "A4-2" -> {
+                break;
+                case "A4-2": {
                     System.out.println("0");
                     executeMessage(asthmaMessage5);
+                    updateMetrics("metric5",0,update);
                 }
-                case "A4-3" -> {
+                break;
+                case "A4-3": {
                     System.out.println("-2");
                     executeMessage(asthmaMessage5);
+                    updateMetrics("metric5",-2,update);
                 }
-                case "A5-1" -> {
+                break;
+                case "A5-1": {
                     System.out.println("0");
                     executeMessage(asthmaMessage6);
+                    updateMetrics("metric6",0,update);
                 }
-                case "A5-2" -> {
+                break;
+                case "A5-2": {
                     System.out.println("+2");
                     executeMessage(asthmaMessage6);
+                    updateMetrics("metric6",2,update);
                 }
-                case "A5-3" -> {
+                break;
+                case "A5-3": {
                     System.out.println("+3");
                     executeMessage(asthmaMessage6);
+                    updateMetrics("metric6",3,update);
                 }
-                case "A6-1" -> {
+                break;
+                case "A6-1": {
                     System.out.println("-1");
                     executeMessage(asthmaMessage7);
+                    updateMetrics("metric7",-1,update);
                 }
-                case "A6-2" -> {
+                break;
+                case "A6-2": {
                     System.out.println("+3");
                     executeMessage(asthmaMessage7);
+                    updateMetrics("metric7",3,update);
                 }
-                case "A6-3" -> {
+                break;
+                case "A6-3": {
                     System.out.println("+4");
                     executeMessage(asthmaMessage7);
+                    updateMetrics("metric7",4,update);
                 }
-                case "A7-1" -> {
+                break;
+                case "A7-1": {
                     System.out.println("-2");
                     executeMessage(asthmaMessage8);
+                    updateMetrics("metric8",-2,update);
                 }
-                case "A7-2" -> {
+                break;
+                case "A7-2": {
                     System.out.println("0");
                     executeMessage(asthmaMessage8);
+                    updateMetrics("metric8",0,update);
                 }
-                case "A7-3" -> {
+                break;
+                case "A7-3": {
                     System.out.println("+4");
                     executeMessage(asthmaMessage8);
+                    updateMetrics("metric8",4,update);
                 }
-                case "A7-4" -> {
+                break;
+                case "A7-4": {
                     System.out.println("+3");
                     executeMessage(asthmaMessage8);
+                    updateMetrics("metric8",3,update);
                 }
-                case "A7-5" -> {
+                break;
+                case "A7-5": {
                     System.out.println("+6");
                     executeMessage(asthmaMessage8);
+                    updateMetrics("metric8",6,update);
                 }
-                case "A8-1" -> {
+                break;
+                case "A8-1": {
                     System.out.println("-2");
                     executeMessage(asthmaMessage9);
+                    updateMetrics("metric9",-2,update);
                 }
-                case "A8-2" -> {
+                break;
+                case "A8-2": {
                     System.out.println("+1");
                     executeMessage(asthmaMessage9);
+                    updateMetrics("metric9",1,update);
                 }
-                case "A8-3" -> {
+                break;
+                case "A8-3": {
                     System.out.println("+5");
                     executeMessage(asthmaMessage9);
+                    updateMetrics("metric9",5,update);
                 }
-                case "A8-4" -> {
+                break;
+                case "A8-4": {
                     System.out.println("+9");
                     executeMessage(asthmaMessage9);
+                    updateMetrics("metric9",9,update);
                 }
-                case "A9-1" -> {
+                break;
+                case "A9-1": {
                     System.out.println("0");
                     executeMessage(asthmaMessage10);
+                    updateMetrics("metric10",0,update);
                 }
-                case "A9-2" -> {
+                break;
+                case "A9-2": {
                     System.out.println("+3");
                     executeMessage(asthmaMessage10);
+                    updateMetrics("metric10",3,update);
                 }
-                case "A10-1" -> {
+                break;
+                case "A10-1": {
                     System.out.println("-1");
                     executeMessage(asthmaMessage11);
+                    updateMetrics("metric11",-1,update);
                 }
-                case "A10-2" -> {
+                break;
+                case "A10-2": {
                     System.out.println("+5");
                     executeMessage(asthmaMessage11);
+                    updateMetrics("metric11",5,update);
                 }
-                case "A11-1" -> {
+                break;
+                case "A11-1": {
                     System.out.println("-1");
                     executeMessage(asthmaMessage12);
+                    updateMetrics("metric12",-1,update);
                 }
-                case "A11-2" -> {
+                break;
+                case "A11-2": {
                     System.out.println("0");
                     executeMessage(asthmaMessage12);
+                    updateMetrics("metric12",0,update);
                 }
-                case "A11-3" -> {
+                break;
+                case "A11-3": {
                     System.out.println("+2");
                     executeMessage(asthmaMessage12);
+                    updateMetrics("metric12",2,update);
                 }
-                case "A11-4" -> {
+                break;
+                case "A11-4": {
                     System.out.println("+4");
                     executeMessage(asthmaMessage12);
+                    updateMetrics("metric12",4,update);
                 }
+                break;
             }
         }
     }

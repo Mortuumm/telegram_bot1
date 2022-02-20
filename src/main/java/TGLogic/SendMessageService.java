@@ -39,13 +39,6 @@ public class SendMessageService {
         return sendMessage;
     }
 
-    public SendMessage createBackMessage(Update update){
-        return createSimpleMessage(update,"Возвращаю назад");
-    }
-
-    public SendMessage createEndMessage(Update update){
-        return createSimpleMessage(update,END_PLANNING_MESSAGE);
-    }
 
     public SendMessage createHelpMessage(Update update){
         return createSimpleMessage(update, HELP_MESSAGE);
