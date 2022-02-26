@@ -44,7 +44,7 @@ public class TGButtonsLogic {
     public InlineKeyboardMarkup addInlineButtons1(InlineKeyboardButton[] button){
         List<List<InlineKeyboardButton>> keyBoard = new ArrayList<>();
 
-        for(int i=0; i < button.length; ++i ){
+        for(int i=0; i < button.length; i++ ){
             List<InlineKeyboardButton> inlineKeyboardRow = new ArrayList<>();
             inlineKeyboardRow.add(button[i]);
             Collections.addAll(keyBoard, inlineKeyboardRow);

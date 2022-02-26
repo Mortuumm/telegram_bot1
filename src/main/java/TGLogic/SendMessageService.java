@@ -627,7 +627,7 @@ public class SendMessageService {
         editMessageText.setMessageId(toIntExact(mesId));
         editMessageText.setText(infection);
         InlineKeyboardButton[] buttons = new InlineKeyboardButton[count];
-        for(int i=0; i < count; ++i ){
+        for(int i=0; i < count; i++ ){
             buttons[i] = tgButtonsLogic.createInlineButton(buttonNames[i],buttonNumbers[i]);
             tgButtonsLogic.addInlineButtons(buttons[i]);
         }

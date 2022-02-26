@@ -85,14 +85,20 @@ public class TGJavaBotController extends TelegramLongPollingBot {
     }
     }
 
-    public  HashMap<String, String[]> putInHash(String[] callBack, String[] descriptionOfButtons, int count){
+    public  void putInHash(HashMap<String, String[]> scheduler,
+                                                String[] callBack, String[] descriptionOfButtons){
+        for (int i=0; i < descriptionOfButtons.length; i++){
+            scheduler.put(callBack[i],new String[]{descriptionOfButtons[i]});
+        }
+    }
+    /*public  HashMap<String, String[]> putInHash(String[] callBack, String[] descriptionOfButtons, int count){
         HashMap<String, String[]> scheduler = new HashMap<>();
         for (int i=0; i < count; ++i){
             scheduler.put(callBack[i],new String[]{descriptionOfButtons[i]});
         }
         System.out.println(scheduler.get("inf-0"));
         return scheduler;
-    }
+    }*/
     @Override
     public void onUpdateReceived(Update update) {
         if(update.hasMessage() && update.getMessage().hasText()){
@@ -127,8 +133,29 @@ public class TGJavaBotController extends TelegramLongPollingBot {
 
         if(update.hasCallbackQuery()) {
             String callDate = update.getCallbackQuery().getData();
+            /*,"1-2","1-3","1-4","1-5","1-6","2-1","2-2","2-3",
+                    "3-1","3-2","3-3","4-1","4-2","5-1","5-2","5-3","6-1","6-2","6-3","6-4",
+                    "7-1","7-2","8-1","8-2"*/
             HashMap<String, String[]> scheduler = new HashMap<>();
-            
+            putInHash(scheduler,new String[]{"inf-0","1-1","2-1"},
+                    new String[]{"Для начала определим наличие и характер сыпи:/" + MENINGOC + "/"
+                            + Arrays.toString(new String[]{"сыпи нет",
+                            "не геморрагическая",
+                            "геморрагическая  мелкоточечная",
+                            "сочетание  геморрагической  и другой",
+                            "геморрагическая  звездчатая",
+                            "геморрагическая  сливная"}) + "/6" + "/" +
+                            Arrays.toString(new String[]{"1-1", "1-2", "1-3", "1-4", "1-5", "1-6"}) + "/*",
+                    "Преимущественная локализация сыпи:/" + MENINGOC + "/"
+                            + Arrays.toString(new String[]{"на конечностях", "на лице",
+                            "на туловище", "равномерно по телу"}) + "/4" + "/" +
+                            Arrays.toString(new String[]{"2-1", "2-2", "2-3", "2-4"}) + "/-9" + "/metric1"
+            ,
+                            "Яркость сыпи:/" + MENINGOC + "/"
+                                    + Arrays.toString(new String[]{"бледная", "яркая",
+                                    "циниточная"}) + "/3" + "/" +
+                                    Arrays.toString(new String[]{"3-1", "3-2", "3-3"}) + "/-8" + "/metric2"
+            });
            /* scheduler.put("inf-0", new String[]{"Для начала определим наличие и характер сыпи:/" + MENINGOC + "/"
                     + Arrays.toString(new String[]{"сыпи нет",
                     "не геморрагическая",
