@@ -22,21 +22,10 @@ public class DataBaseConnection {
     }
 
     public static void updateDb(String sqlStmt) throws SQLException {
-        Connection dbConnection = null;
-        Statement statement = null;
-        try {
-            dbConnection=dbConnection();
-            statement = dbConnection.createStatement();
+        try (Connection dbConnection = dbConnection(); Statement statement = dbConnection.createStatement()) {
             statement.executeUpdate(sqlStmt);
         } catch (SQLException e) {
             System.out.println(e);
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
-            if (dbConnection != null) {
-                dbConnection.close();
-            }
         }
     }
 

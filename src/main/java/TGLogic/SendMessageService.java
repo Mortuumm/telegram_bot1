@@ -9,8 +9,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import static TGConstant.Constant.*;
 import static java.lang.Math.toIntExact;
@@ -33,12 +31,12 @@ public class SendMessageService {
         InlineKeyboardButton button1 = tgButtonsLogic.createInlineButton(MENINGOC,"inf-0");
         InlineKeyboardButton button2 = tgButtonsLogic.createInlineButton(ASTHMA,"inf-1");
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),tgButtonsLogic.addInlineButtons(button2)));
+                tgButtonsLogic.setInlineKeyboard(
+                        tgButtonsLogic.addInlineButtons(button1),
+                        tgButtonsLogic.addInlineButtons(button2));
         sendMessage.setReplyMarkup(replyKeyboardMarkup);
         return sendMessage;
     }
-
 
     public SendMessage createHelpMessage(Update update){
         return createSimpleMessage(update, HELP_MESSAGE);
@@ -84,22 +82,13 @@ public class SendMessageService {
         return answerCallbackQuery;
     }*/
 
-    public List<EditMessageText> createMeningocMessage(Update update, String infection) {
+   /* public EditMessageText createMeningocMessage(Update update, String infection) {
         EditMessageText editMessageText = new EditMessageText();
-        EditMessageText editMessageText1 = new EditMessageText();
         long mesId = update.getCallbackQuery().getMessage().getMessageId();
         long chatId = update.getCallbackQuery().getMessage().getChatId();
         editMessageText.setChatId(chatId);
         editMessageText.setMessageId(toIntExact(mesId));
         editMessageText.setText(infection);
-        List<EditMessageText> editMessageTextList = new ArrayList<>();
-        editMessageTextList.add(editMessageText);
-        long mesId1 = update.getCallbackQuery().getMessage().getMessageId();
-        long chatId1 = update.getCallbackQuery().getMessage().getChatId();
-        editMessageText1.setChatId(chatId1);
-        editMessageText1.setMessageId(toIntExact(mesId1));
-        editMessageText1.setText(SELECT_MESSAGE);
-        editMessageTextList.add(editMessageText1);
 
         InlineKeyboardButton button1 = tgButtonsLogic.
                 createInlineButton("сыпи  нет","0-1");
@@ -115,20 +104,45 @@ public class SendMessageService {
                 createInlineButton("геморрагическая  сливная","0-6");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
-        tgButtonsLogic.addInlineButtons(button2),
-        tgButtonsLogic.addInlineButtons(button3),
-        tgButtonsLogic.addInlineButtons(button4),
-        tgButtonsLogic.addInlineButtons(button5),
-        tgButtonsLogic.addInlineButtons(button6)));
+                tgButtonsLogic.setInlineKeyboard(
+                        tgButtonsLogic.addInlineButtons(button1),
+                        tgButtonsLogic.addInlineButtons(button2),
+                        tgButtonsLogic.addInlineButtons(button3),
+                        tgButtonsLogic.addInlineButtons(button4),
+                        tgButtonsLogic.addInlineButtons(button5),
+                        tgButtonsLogic.addInlineButtons(button6));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
 
-        return editMessageTextList;
+        return editMessageText;
     }
 
-    public EditMessageText createMeningocMessage1(Update update, String infection) {
+    public EditMessageText createAsthmaMessage(Update update, String infection) {
+        EditMessageText editMessageText = new EditMessageText();
+        long mesId = update.getCallbackQuery().getMessage().getMessageId();
+        long chatId = update.getCallbackQuery().getMessage().getChatId();
+        editMessageText.setChatId(chatId);
+        editMessageText.setMessageId(toIntExact(mesId));
+        editMessageText.setText(infection);
+
+        InlineKeyboardButton button1 = tgButtonsLogic.
+                createInlineButton("не отмечено","A0-1");
+        InlineKeyboardButton button2 = tgButtonsLogic.
+                createInlineButton("АЗ, кроме бронхиальной астмы(БА)","A0-2");
+        InlineKeyboardButton button3 = tgButtonsLogic.
+                createInlineButton("БА или сочетание БА с другими","A0-3");
+
+        InlineKeyboardMarkup replyKeyboardMarkup =
+                tgButtonsLogic.setInlineKeyboard(
+                        tgButtonsLogic.addInlineButtons(button1),
+                        tgButtonsLogic.addInlineButtons(button2),
+                        tgButtonsLogic.addInlineButtons(button3));
+
+        editMessageText.setReplyMarkup(replyKeyboardMarkup);
+        return editMessageText;
+    }*/
+
+    /*public EditMessageText createMeningocMessage1(Update update, String infection) {
         EditMessageText editMessageText = new EditMessageText();
         long mesId = update.getCallbackQuery().getMessage().getMessageId();
         long chatId = update.getCallbackQuery().getMessage().getChatId();
@@ -146,11 +160,11 @@ public class SendMessageService {
                 createInlineButton("равномерно по телу","1-3");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
+                tgButtonsLogic.setInlineKeyboard(
+                        tgButtonsLogic.addInlineButtons(button1),
         tgButtonsLogic.addInlineButtons(button2),
         tgButtonsLogic.addInlineButtons(button3),
-        tgButtonsLogic.addInlineButtons(button4)));
+        tgButtonsLogic.addInlineButtons(button4));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
@@ -172,10 +186,10 @@ public class SendMessageService {
                 createInlineButton("цианиточная","2-3");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
+                tgButtonsLogic.setInlineKeyboard(
+                        tgButtonsLogic.addInlineButtons(button1),
                                 tgButtonsLogic.addInlineButtons(button2),
-                                tgButtonsLogic.addInlineButtons(button3)));
+                                tgButtonsLogic.addInlineButtons(button3));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
@@ -195,9 +209,8 @@ public class SendMessageService {
                 createInlineButton("разлитой или акроцианоз","3-2");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
-                                tgButtonsLogic.addInlineButtons(button2)));
+                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.addInlineButtons(button1),
+                                tgButtonsLogic.addInlineButtons(button2));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
@@ -219,10 +232,10 @@ public class SendMessageService {
                 createInlineButton("терминальное","4-3");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
+                tgButtonsLogic.setInlineKeyboard(
+                        tgButtonsLogic.addInlineButtons(button1),
                                 tgButtonsLogic.addInlineButtons(button2),
-                                tgButtonsLogic.addInlineButtons(button3)));
+                                tgButtonsLogic.addInlineButtons(button3));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
@@ -250,11 +263,10 @@ public class SendMessageService {
                         "Сейчас <= 37,5 ","5-4");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
+                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.addInlineButtons(button1),
                                 tgButtonsLogic.addInlineButtons(button2),
                                 tgButtonsLogic.addInlineButtons(button3),
-                                tgButtonsLogic.addInlineButtons(button4)));
+                                tgButtonsLogic.addInlineButtons(button4));
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
     }
@@ -273,9 +285,8 @@ public class SendMessageService {
                 createInlineButton("есть","6-2");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
-                                tgButtonsLogic.addInlineButtons(button2)));
+                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.addInlineButtons(button1),
+                                tgButtonsLogic.addInlineButtons(button2));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
@@ -295,9 +306,9 @@ public class SendMessageService {
                 createInlineButton("выражены умеренно или резко","7-2");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
-                                tgButtonsLogic.addInlineButtons(button2)));
+                tgButtonsLogic.setInlineKeyboard(
+                        tgButtonsLogic.addInlineButtons(button1),
+                                tgButtonsLogic.addInlineButtons(button2));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
@@ -313,30 +324,7 @@ public class SendMessageService {
         return editMessageText;
     }
 
-    public EditMessageText createAsthmaMessage(Update update, String infection) {
-        EditMessageText editMessageText = new EditMessageText();
-        long mesId = update.getCallbackQuery().getMessage().getMessageId();
-        long chatId = update.getCallbackQuery().getMessage().getChatId();
-        editMessageText.setChatId(chatId);
-        editMessageText.setMessageId(toIntExact(mesId));
-        editMessageText.setText(infection);
 
-        InlineKeyboardButton button1 = tgButtonsLogic.
-                createInlineButton("не отмечено","A0-1");
-        InlineKeyboardButton button2 = tgButtonsLogic.
-                createInlineButton("АЗ, кроме бронхиальной астмы(БА)","A0-2");
-        InlineKeyboardButton button3 = tgButtonsLogic.
-                createInlineButton("БА или сочетание БА с другими","A0-3");
-
-        InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
-                                tgButtonsLogic.addInlineButtons(button2),
-                                tgButtonsLogic.addInlineButtons(button3)));
-
-        editMessageText.setReplyMarkup(replyKeyboardMarkup);
-        return editMessageText;
-    }
 
     public EditMessageText createAsthmaMessage1(Update update, String infection) {
         EditMessageText editMessageText = new EditMessageText();
@@ -354,10 +342,9 @@ public class SendMessageService {
                 createInlineButton("БА или сочетание БА с другими","A1-3");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
+                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.addInlineButtons(button1),
                                 tgButtonsLogic.addInlineButtons(button2),
-                                tgButtonsLogic.addInlineButtons(button3)));
+                                tgButtonsLogic.addInlineButtons(button3));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
@@ -379,10 +366,10 @@ public class SendMessageService {
                 createInlineButton("аспирационные","A2-3");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
+                tgButtonsLogic.setInlineKeyboard(
+                        tgButtonsLogic.addInlineButtons(button1),
                                 tgButtonsLogic.addInlineButtons(button2),
-                                tgButtonsLogic.addInlineButtons(button3)));
+                                tgButtonsLogic.addInlineButtons(button3));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
@@ -404,10 +391,9 @@ public class SendMessageService {
                 createInlineButton("два и более факторов","A3-3");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
+                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.addInlineButtons(button1),
                                 tgButtonsLogic.addInlineButtons(button2),
-                                tgButtonsLogic.addInlineButtons(button3)));
+                                tgButtonsLogic.addInlineButtons(button3));
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
     }
@@ -428,10 +414,9 @@ public class SendMessageService {
                 createInlineButton("свыше 4 месяцев","A4-3");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
+                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.addInlineButtons(button1),
                                 tgButtonsLogic.addInlineButtons(button2),
-                                tgButtonsLogic.addInlineButtons(button3)));
+                                tgButtonsLogic.addInlineButtons(button3));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
@@ -453,10 +438,9 @@ public class SendMessageService {
                 createInlineButton("в период лактации","A5-3");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
+                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.addInlineButtons(button1),
                                 tgButtonsLogic.addInlineButtons(button2),
-                                tgButtonsLogic.addInlineButtons(button3)));
+                                tgButtonsLogic.addInlineButtons(button3));
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
     }
@@ -477,10 +461,9 @@ public class SendMessageService {
                 createInlineButton("в период лактации","A6-3");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
+                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.addInlineButtons(button1),
                                 tgButtonsLogic.addInlineButtons(button2),
-                                tgButtonsLogic.addInlineButtons(button3)));
+                                tgButtonsLogic.addInlineButtons(button3));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
@@ -507,12 +490,11 @@ public class SendMessageService {
                 createInlineButton("то же, связана с введением смесей","A7-5");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
+                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.addInlineButtons(button1),
                                 tgButtonsLogic.addInlineButtons(button2),
                                 tgButtonsLogic.addInlineButtons(button3),
                                 tgButtonsLogic.addInlineButtons(button4),
-                                tgButtonsLogic.addInlineButtons(button5)));
+                                tgButtonsLogic.addInlineButtons(button5));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
@@ -535,11 +517,10 @@ public class SendMessageService {
         InlineKeyboardButton button4 = tgButtonsLogic.
                 createInlineButton("ОРВИ с ОБО повторно","A8-4");
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
+                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.addInlineButtons(button1),
                                 tgButtonsLogic.addInlineButtons(button2),
                                 tgButtonsLogic.addInlineButtons(button3),
-                                tgButtonsLogic.addInlineButtons(button4)));
+                                tgButtonsLogic.addInlineButtons(button4));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
@@ -559,9 +540,8 @@ public class SendMessageService {
                 createInlineButton("были","A9-2");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
-                                tgButtonsLogic.addInlineButtons(button2)));
+                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.addInlineButtons(button1),
+                                tgButtonsLogic.addInlineButtons(button2));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
@@ -581,9 +561,8 @@ public class SendMessageService {
                 createInlineButton("применялись","A10-2");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
-                                tgButtonsLogic.addInlineButtons(button2)));
+                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.addInlineButtons(button1),
+                                tgButtonsLogic.addInlineButtons(button2));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
@@ -607,11 +586,10 @@ public class SendMessageService {
                 createInlineButton("сопровождалось реакциями","A11-4");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
-                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.createInlineButtons
-                        (tgButtonsLogic.addInlineButtons(button1),
+                tgButtonsLogic.setInlineKeyboard(tgButtonsLogic.addInlineButtons(button1),
                                 tgButtonsLogic.addInlineButtons(button2),
                                 tgButtonsLogic.addInlineButtons(button3),
-                                tgButtonsLogic.addInlineButtons(button4)));
+                                tgButtonsLogic.addInlineButtons(button4));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
         return editMessageText;
@@ -624,6 +602,38 @@ public class SendMessageService {
         editMessageText.setChatId(chatId);
         editMessageText.setMessageId(toIntExact(mesId));
         editMessageText.setText(infection);
+        return editMessageText;
+    }*/
+
+    /*public EditMessageText createAsthmaMessages(Update update,String infection){
+        HashMap<String[],String[]> schedulerMessages= new HashMap<>();
+        schedulerMessages.put(new String[]{}, new String[]{"10:15/11:50/пр.Корпоративные системы",
+                "12:00/13:35/лаб.Корпоративные системы"});
+        schedulerMessages.put(new String[]{}, new String[]{"10:15/11:50/пр.Корпоративные системы",
+                "12:00/13:35/лаб.Корпоративные системы"});
+        schedulerMessages.put(new String[]{}, new String[]{"10:15/11:50/пр.Корпоративные системы",
+                "12:00/13:35/лаб.Корпоративные системы"});
+        schedulerMessages.put(new String[]{}, new String[]{"10:15/11:50/пр.Корпоративные системы",
+                "12:00/13:35/лаб.Корпоративные системы"});
+        schedulerMessages.put(new String[]{}, new String[]{"10:15/11:50/пр.Корпоративные системы",
+                "12:00/13:35/лаб.Корпоративные системы"});
+    }*/
+    public EditMessageText createInlineButtonsMessage(Update update, String infection, int count,
+                                                      String[] buttonNames, String[] buttonNumbers){
+        EditMessageText editMessageText = new EditMessageText();
+        long mesId = update.getCallbackQuery().getMessage().getMessageId();
+        long chatId = update.getCallbackQuery().getMessage().getChatId();
+        editMessageText.setChatId(chatId);
+        editMessageText.setMessageId(toIntExact(mesId));
+        editMessageText.setText(infection);
+        InlineKeyboardButton[] buttons = new InlineKeyboardButton[count];
+        for(int i=0; i < count; ++i ){
+            buttons[i] = tgButtonsLogic.createInlineButton(buttonNames[i],buttonNumbers[i]);
+            tgButtonsLogic.addInlineButtons(buttons[i]);
+        }
+        InlineKeyboardMarkup replyKeyboardMarkup = tgButtonsLogic.addInlineButtons1(buttons);
+        editMessageText.setReplyMarkup(replyKeyboardMarkup);
+
         return editMessageText;
     }
 }

@@ -5,17 +5,7 @@ import org.telegram.telegrambots.meta.ApiContext;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
-
 import java.util.logging.Logger;
-
-
-//ЗАПОМНИ ПРИДУРОК ЕСЛИ ГОРИТ КРАСНЫМ ЭТО НЕ ЗНАЧИТ,ЧТО ПРОЕКТ НЕ РАБОТАЕТ
-/*
-ЕСЛИ ВЫЛЕТАЕТ НАДПИСЬ С ДАТОЙ И ИНФОЛОГ О ЗАПУСКЕ ТЕЛЕГРАМ АПИ ТО ВСЁ РАБОТАЕТ, ЗАПОМНИ УЖЕ ЭТО ДЕГЕНЕРАТ
- */
-/*
-Сделать проверку на отсутствие имени и фамилии
- */
 
 public class Main {
 

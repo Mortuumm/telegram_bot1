@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class TGButtonsLogic {
@@ -32,7 +33,6 @@ public class TGButtonsLogic {
         InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
         inlineKeyboardButton.setText(buttonName);
         inlineKeyboardButton.setCallbackData(number);
-
         return inlineKeyboardButton;
     }
 
@@ -41,17 +41,24 @@ public class TGButtonsLogic {
         inlineKeyboardRow.add(button);
         return inlineKeyboardRow;
     }
-
-    @SafeVarargs
-    public final List<List<InlineKeyboardButton>> createInlineButtons(List<InlineKeyboardButton>... keyboardRowName){
+    public InlineKeyboardMarkup addInlineButtons1(InlineKeyboardButton[] button){
         List<List<InlineKeyboardButton>> keyBoard = new ArrayList<>();
-        Collections.addAll(keyBoard, keyboardRowName);
-        return keyBoard;
+
+        for(int i=0; i < button.length; ++i ){
+            List<InlineKeyboardButton> inlineKeyboardRow = new ArrayList<>();
+            inlineKeyboardRow.add(button[i]);
+            Collections.addAll(keyBoard, inlineKeyboardRow);
+        }
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.setKeyboard(keyBoard);
+            return inlineKeyboardMarkup;
     }
 
-    public InlineKeyboardMarkup setInlineKeyboard(List<List<InlineKeyboardButton>> keyboardList){
+    public InlineKeyboardMarkup setInlineKeyboard(List<InlineKeyboardButton>... keyboardRowName){
+        List<List<InlineKeyboardButton>> keyBoard = new ArrayList<>();
+        Collections.addAll(keyBoard, keyboardRowName);
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.setKeyboard(keyboardList);
+        inlineKeyboardMarkup.setKeyboard(keyBoard);
         return inlineKeyboardMarkup;
     }
 }

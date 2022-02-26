@@ -6,6 +6,9 @@ public class Constant {
     public static final String USER = "root";
     public static final String PASS = "Mortuum48";
 
+    public static final String TOKEN = "2018829476:AAFcvR0sF_Y63CdZ3r9frf97hqIxvZLzNNs";
+    public static final String USERNAME ="DiplomJavaStudy_Bot";
+
     public static final String GREETING_MESSAGE = "Приветствую в нашем болоте";
     public static final String START_DISEASES_MESSAGE = "Мы подскажем, что делать в случае вашей болезни: " ;
     public static final String SELECT_MESSAGE = "Определим признаки до начала лечения";
