@@ -20,13 +20,47 @@ public class SendMessageService {
 
     public SendMessage createGreetingInformation(Update update){
         SendMessage message = createSimpleMessage(update,GREETING_MESSAGE);
-        ReplyKeyboardMarkup keyboardMarkup = tgButtonsLogic.setButtons(tgButtonsLogic.createButtons(
-                asList(START_PLANNING,SHOW_DEALS)));
+        ReplyKeyboardMarkup keyboardMarkup = tgButtonsLogic.createButtons(
+                asList(START_PLANNING,SHOW_DEALS));
         message.setReplyMarkup(keyboardMarkup);
         return message;
     }
 
-    public SendMessage createTabletsInstruction(Update update){
+    public EditMessageText createInlineButtonsMessage(Update update, String infection,
+                                                      String[] buttonNames, String[] buttonNumbers){
+        EditMessageText editMessageText = new EditMessageText();
+        long mesId = update.getCallbackQuery().getMessage().getMessageId();
+        long chatId = update.getCallbackQuery().getMessage().getChatId();
+        editMessageText.setChatId(chatId);
+        editMessageText.setMessageId(toIntExact(mesId));
+        editMessageText.setText(infection);
+        InlineKeyboardButton[] buttons = new InlineKeyboardButton[buttonNumbers.length];
+        for(int i=0; i < buttonNumbers.length; i++ ){
+            buttons[i] = tgButtonsLogic.createInlineButton(buttonNames[i],buttonNumbers[i]);
+
+        }
+        InlineKeyboardMarkup replyKeyboardMarkup = tgButtonsLogic.setGenerateInlineKeybord(buttons);
+        editMessageText.setReplyMarkup(replyKeyboardMarkup);
+
+        return editMessageText;
+    }
+
+    public SendMessage createButtonsMessage(Update update, String infection,
+                                                      String[] buttonNames, String[] buttonNumbers){
+        SendMessage sendMessage = createSimpleMessage(update,infection );
+        InlineKeyboardButton[] buttons = new InlineKeyboardButton[buttonNumbers.length];
+        for(int i=0; i < buttonNumbers.length; i++ ){
+            buttons[i] = tgButtonsLogic.createInlineButton(buttonNames[i],buttonNumbers[i]);
+            //tgButtonsLogic.addInlineButtons(buttons[i]);
+        }
+        InlineKeyboardMarkup replyKeyboardMarkup = tgButtonsLogic.setGenerateInlineKeybord(buttons);
+
+        sendMessage.setReplyMarkup(replyKeyboardMarkup);
+
+        return sendMessage;
+    }
+
+    /*public SendMessage createTabletsInstruction(Update update){
         SendMessage sendMessage = createSimpleMessage(update,START_DISEASES_MESSAGE );
         InlineKeyboardButton button1 = tgButtonsLogic.createInlineButton(MENINGOC,"inf-0");
         InlineKeyboardButton button2 = tgButtonsLogic.createInlineButton(ASTHMA,"inf-1");
@@ -36,7 +70,7 @@ public class SendMessageService {
                         tgButtonsLogic.addInlineButtons(button2));
         sendMessage.setReplyMarkup(replyKeyboardMarkup);
         return sendMessage;
-    }
+    }*/
 
     public SendMessage createHelpMessage(Update update){
         return createSimpleMessage(update, HELP_MESSAGE);
@@ -618,22 +652,5 @@ public class SendMessageService {
         schedulerMessages.put(new String[]{}, new String[]{"10:15/11:50/пр.Корпоративные системы",
                 "12:00/13:35/лаб.Корпоративные системы"});
     }*/
-    public EditMessageText createInlineButtonsMessage(Update update, String infection, int count,
-                                                      String[] buttonNames, String[] buttonNumbers){
-        EditMessageText editMessageText = new EditMessageText();
-        long mesId = update.getCallbackQuery().getMessage().getMessageId();
-        long chatId = update.getCallbackQuery().getMessage().getChatId();
-        editMessageText.setChatId(chatId);
-        editMessageText.setMessageId(toIntExact(mesId));
-        editMessageText.setText(infection);
-        InlineKeyboardButton[] buttons = new InlineKeyboardButton[count];
-        for(int i=0; i < count; i++ ){
-            buttons[i] = tgButtonsLogic.createInlineButton(buttonNames[i],buttonNumbers[i]);
-            tgButtonsLogic.addInlineButtons(buttons[i]);
-        }
-        InlineKeyboardMarkup replyKeyboardMarkup = tgButtonsLogic.addInlineButtons1(buttons);
-        editMessageText.setReplyMarkup(replyKeyboardMarkup);
 
-        return editMessageText;
-    }
 }
