@@ -34,6 +34,7 @@ public class SendMessageService {
         editMessageText.setChatId(chatId);
         editMessageText.setMessageId(toIntExact(mesId));
         editMessageText.setText(infection);
+
         InlineKeyboardButton[] buttons = new InlineKeyboardButton[buttonNumbers.length];
         for(int i=0; i < buttonNumbers.length; i++ ){
             buttons[i] = tgButtonsLogic.createInlineButton(buttonNames[i],buttonNumbers[i]);

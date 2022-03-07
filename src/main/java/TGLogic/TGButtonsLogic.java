@@ -23,6 +23,8 @@ public class TGButtonsLogic {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyBoard= new ArrayList<>();
         replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(false);
         replyKeyboardMarkup.setKeyboard(keyBoard);
         List<KeyboardRow> keyboardRows = new ArrayList<>();
         KeyboardRow keyboardRow = new KeyboardRow();
