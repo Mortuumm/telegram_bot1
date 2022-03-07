@@ -2,12 +2,15 @@ package TGController;
 
 import DataBaseLogic.DataBaseConnection;
 import TGLogic.SendMessageService;
+import TGParser.Parser;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -96,8 +99,13 @@ public class TGJavaBotController extends TelegramLongPollingBot {
             HashMap<String, String[]> scheduler = new HashMap<>();
             user_id = update.getMessage().getFrom().getId();
             switch (update.getMessage().getText()) {
-                case START ->
-                        executeMessage(sendMessageService.createGreetingInformation(update));
+                case START -> {
+                    /*executeMessage(sendMessageService.createGreetingInformation(update));*/
+                    executeMessage(sendMessageService.createButtonsMessage(update, START_DISEASES_MESSAGE,
+                            new String[]{MENINGOC, ASTHMA}, new String[]{"inf-0", "inf-1"}));
+                        Parser.parse("table.xls");
+
+                }
                 case START_PLANNING ->
                         executeMessage(sendMessageService.createButtonsMessage(update,START_DISEASES_MESSAGE,
                                 new String[]{MENINGOC,ASTHMA},new String[]{"inf-0","inf-1"}));
@@ -128,7 +136,6 @@ public class TGJavaBotController extends TelegramLongPollingBot {
                     "3-1","3-2","3-3","4-1","4-2","5-1","5-2","5-3","6-1","6-2","6-3","6-4",
                     "7-1","7-2","8-1","8-2"*/
             HashMap<String, String[]> scheduler = new HashMap<>();
-            try {
                 putInHash(scheduler, new String[]{"inf-0", "1-1", "2-1"},
                         new String[]{"Для начала определим наличие и характер сыпи:/" + MENINGOC + "/"
                                 + Arrays.toString(new String[]{"сыпи нет",
@@ -145,8 +152,7 @@ public class TGJavaBotController extends TelegramLongPollingBot {
                                 "Яркость сыпи:/" + MENINGOC + "/"
                                         + Arrays.toString(new String[]{"бледная", "яркая",
                                         "циниточная"}) + "/" +
-                                        Arrays.toString(new String[]{"3-1", "3-2", "3-3"}) + "/-8" + "/metric2",
-                                ""
+                                        Arrays.toString(new String[]{"3-1", "3-2", "3-3"}) + "/-8" + "/metric2"
                         });
            /* scheduler.put("inf-0", new String[]{"Для начала определим наличие и характер сыпи:/" + MENINGOC + "/"
                     + Arrays.toString(new String[]{"сыпи нет",
@@ -176,10 +182,7 @@ public class TGJavaBotController extends TelegramLongPollingBot {
                     + Arrays.toString(new String[]{"бледная", "яркая",
                     "циниточная"}) + "/4" + "/" +
                     Arrays.toString(new String[]{"2-1", "2-2", "2-3"}) + "/-8" + "/metric2"});*/
-            }
-            catch (Exception exception){
-                System.out.println("Выход за пределы массива");;
-            }
+
             for (String sch : scheduler.get(callDate)) {
                 String[] sched = sch.split("/");
                 createButtonNameArr(sched[2], sched[3]);
