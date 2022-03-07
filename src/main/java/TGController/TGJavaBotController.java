@@ -105,9 +105,9 @@ public class TGJavaBotController extends TelegramLongPollingBot {
     }*/
 
     public void putInHash(HashMap<String, String[]> scheduler,
-                          ArrayList<String> callBack, String[] descriptionOfButtons){
-        for (int i=0; i < descriptionOfButtons.length; i++){
-            scheduler.put(callBack.get(i),new String[]{descriptionOfButtons[i]});
+                          ArrayList<String> callBack, String[] descriptions){
+        for (int i=0; i < descriptions.length; i++){
+            scheduler.put(callBack.get(i),new String[]{descriptions[i]});
         }
     }
     @Override
@@ -123,12 +123,6 @@ public class TGJavaBotController extends TelegramLongPollingBot {
                     executeMessage(sendMessageService.createButtonsMessage(update, START_DISEASES_MESSAGE,
                             new String[]{MENINGOC, ASTHMA}, new String[]{"inf-0", "inf-1"}));
                         parser.readFromExcel("C:/Users/Mortuum/IdeaProjects/telegram_bot/table.xlsx");
-                    System.out.println(parser.getCallDataArray());
-                    System.out.println(parser.getQuestionArray());
-                    System.out.println(parser.getDiseaseNameArray());
-                    System.out.println(parser.getButtonsNameArray());
-                    System.out.println(parser.getCallBackButtonsArray());
-                    System.out.println(parser.getMarksArray());
                 }
                 case START_PLANNING ->
                         executeMessage(sendMessageService.createButtonsMessage(update,START_DISEASES_MESSAGE,
@@ -160,8 +154,9 @@ public class TGJavaBotController extends TelegramLongPollingBot {
                     "3-1","3-2","3-3","4-1","4-2","5-1","5-2","5-3","6-1","6-2","6-3","6-4",
                     "7-1","7-2","8-1","8-2"*/
             HashMap<String, String[]> scheduler = new HashMap<>();
+            String[] mass = new String[]{};
                 putInHash(scheduler, parser.getCallDataArray(),
-                        new String[]{  parser.getQuestionArray().get(0) +"/" + MENINGOC + "/"
+                        new String[]{parser.getQuestionArray().get(0) +"/" + parser.getDiseaseNameArray().get(1) + "/"
                                 + Arrays.toString(new String[]{"сыпи нет",
                                 "не геморрагическая",
                                 "геморрагическая  мелкоточечная",
@@ -169,11 +164,11 @@ public class TGJavaBotController extends TelegramLongPollingBot {
                                 "геморрагическая  звездчатая",
                                 "геморрагическая  сливная"}) + "/" +
                                 Arrays.toString(new String[]{"1-1", "1-2", "1-3", "1-4", "1-5", "1-6"}),
-                                "Преимущественная локализация сыпи:/" + MENINGOC + "/"
+                                parser.getQuestionArray().get(1) +"/" + parser.getDiseaseNameArray().get(2) + "/"
                                         + Arrays.toString(new String[]{"на конечностях", "на лице",
                                         "на туловище", "равномерно по телу"}) + "/" +
                                         Arrays.toString(new String[]{"2-1", "2-2", "2-3", "2-4"}) + "/-9",
-                                "Яркость сыпи:/" + MENINGOC + "/"
+                                parser.getQuestionArray().get(2) +"/"+ parser.getDiseaseNameArray().get(2) + "/"
                                         + Arrays.toString(new String[]{"бледная", "яркая", "циниточная"}) + "/" +
                                         Arrays.toString(new String[]{"3-1", "3-2", "3-3"}) + "/-8"});
            /* new String[]{"Для начала определим наличие и характер сыпи:/" + MENINGOC + "/"
