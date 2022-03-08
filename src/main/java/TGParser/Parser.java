@@ -33,7 +33,12 @@ public class Parser {
         Row rowButtonsName;
         Row rowCallbackButtons;
         Row rowMarks;
-        Cell cell;
+        Cell callBackCell;
+        Cell QuestionCell;
+        Cell DiseaseNameCell;
+        Cell ButtonsNameCell;
+        Cell CallbackButtonsCell;
+        Cell MarksCell;
 
         Iterator<Row> rowIterator = sheet.iterator();
             rowCallback = sheet.getRow(0);
@@ -44,42 +49,41 @@ public class Parser {
             rowMarks = sheet.getRow(5);
             int cn = rowCallback.getLastCellNum();
             for (int i=1; i < cn;i++){
-                cell = rowCallback.getCell(i);
-                if (cell.getCellType() == CellType.STRING) {
-                    callDataArray.add(cell.getStringCellValue());
+                callBackCell = rowCallback.getCell(i);
+                if (callBackCell.getCellType() == CellType.STRING) {
+                    callDataArray.add(callBackCell.getStringCellValue());
                 }
             }
             for (int i=1; i < cn;i++){
-            cell = rowQuestion.getCell(i);
-            if (cell.getCellType() == CellType.STRING) {
-                questionArray.add(cell.getStringCellValue());
+                QuestionCell = rowQuestion.getCell(i);
+            if (QuestionCell.getCellType() == CellType.STRING) {
+                questionArray.add(QuestionCell.getStringCellValue());
             }
         }
         for (int i=1; i < cn;i++){
-            cell = rowDiseaseName.getCell(i);
-            if (cell.getCellType() == CellType.STRING) {
-                diseaseNameArray.add(cell.getStringCellValue());
+            DiseaseNameCell = rowDiseaseName.getCell(i);
+            if (DiseaseNameCell.getCellType() == CellType.STRING) {
+                diseaseNameArray.add(DiseaseNameCell.getStringCellValue());
             }
         }
         for (int i=1; i < cn;i++){
-            cell = rowButtonsName.getCell(i);
-            if (cell.getCellType() == CellType.STRING) {
-                buttonsNameArray.add(cell.getStringCellValue());
+            ButtonsNameCell = rowButtonsName.getCell(i);
+            if (ButtonsNameCell.getCellType() == CellType.STRING) {
+                buttonsNameArray.add(ButtonsNameCell.getStringCellValue());
             }
         }
         for (int i=1; i < cn;i++){
-            cell = rowCallbackButtons.getCell(i);
-            if (cell.getCellType() == CellType.STRING) {
-                callBackButtonsArray.add(cell.getStringCellValue());
+            CallbackButtonsCell = rowCallbackButtons.getCell(i);
+            if (CallbackButtonsCell.getCellType() == CellType.STRING) {
+                callBackButtonsArray.add(CallbackButtonsCell.getStringCellValue());
             }
         }
         for (int i=1; i < cn;i++){
-            cell = rowMarks.getCell(i);
-            if (cell.getCellType() == CellType.STRING) {
-                marksArray.add(cell.getStringCellValue());
+            MarksCell = rowMarks.getCell(i);
+            if (MarksCell.getCellType() == CellType.STRING) {
+                marksArray.add(MarksCell.getStringCellValue());
             }
         }
-
             /*while (cellIterator.hasNext()) {
                     cell = cellIterator.next();
                     if (cell.getCellType() == CellType.STRING) {

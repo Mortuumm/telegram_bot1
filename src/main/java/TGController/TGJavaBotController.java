@@ -16,13 +16,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 import static TGConstant.Constant.*;
 import static java.lang.Integer.parseInt;
-import static org.apache.commons.lang.StringUtils.split;
 
 public class TGJavaBotController extends TelegramLongPollingBot {
 
@@ -41,9 +38,8 @@ public class TGJavaBotController extends TelegramLongPollingBot {
         XSSFSheet myExcelSheet = myExcelBook.getSheetAt(0);
         XSSFRow row = myExcelSheet.getRow(0);
         String sched = "";
-        for (int i=0; i < 3; i++) {
+        for (int i=0; i < parser.getCallDataArray().size(); i++) {
                 excelArray = row.getCell(i).getStringCellValue().split(",");
-            System.out.println(Arrays.toString(excelArray));
         }
     }
     public  void updateMetrics(int i, int number,Update update){
@@ -62,22 +58,22 @@ public class TGJavaBotController extends TelegramLongPollingBot {
                     "(test_bd.test_table.client_message, " +
                     "test_bd.test_table.diseas_test)" +
                     "VALUES('" + user_id + "','" +diseas+"' ) ");
-            System.out.println(user_id);
+           // System.out.println(user_id);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
     public void createButtonNameArr(String sched2, String sched3){
-        sched2 = sched2.substring(1);
+        /*sched2 = sched2.substring(1);
         sched2 = sched2.substring(0, sched2.length()-1);
         sched3 = sched3.substring(1);
         sched3 = sched3.substring(0, sched3.length()-1);
-        sched3 = sched3.replaceAll(" ","");
+        sched3 = sched3.replaceAll(" ","");*/
         for(int i=0; i < sched2.length(); i++){
             buttonNames = sched2.split(",");
         }
-        for(int i=0; i < sched2.length(); i++){
+        for(int i=0; i < sched3.length(); i++){
             buttonCallDateNames = sched3.split(",");
         }
 
@@ -104,29 +100,52 @@ public class TGJavaBotController extends TelegramLongPollingBot {
     }
     }*/
 
+    public void parserArray(HashMap<String, String[]> scheduler){
+        for (int i=0; i < parser.getCallDataArray().size(); i++){
+                putInHash(scheduler, parser.getCallDataArray().get(i),
+                        new String[]{parser.getQuestionArray().get(i) +"/"
+                                +parser.getDiseaseNameArray().get(i) + "/"
+                                +parser.getButtonsNameArray().get(i) + "/"
+                                +parser.getCallBackButtonsArray().get(i) + "/"
+                                +parser.getMarksArray().get(i)});
+        }
+    }
     public void putInHash(HashMap<String, String[]> scheduler,
-                          ArrayList<String> callBack, String[] descriptions){
+                          String callBack, String[] descriptions){
         for (int i=0; i < descriptions.length; i++){
-            scheduler.put(callBack.get(i),new String[]{descriptions[i]});
+            scheduler.put(callBack,new String[]{descriptions[i]});
         }
     }
     @Override
     public void onUpdateReceived(Update update) {
         if(update.hasMessage() && update.getMessage().hasText()){
-            System.out.println(update.getMessage().getFrom().getId());
-            System.out.println(update.getMessage().getFrom());
-           /* HashMap<String, String[]> scheduler = new HashMap<>();*/
-            user_id = update.getMessage().getFrom().getId();
+            //System.out.println(update.getMessage().getFrom().getId());
+            //System.out.println(update.getMessage().getFrom());
+           // user_id = update.getMessage().getFrom().getId();
             switch (update.getMessage().getText()) {
                 case START -> {
                     /*executeMessage(sendMessageService.createGreetingInformation(update));*/
+                    parser.readFromExcel("C:/Users/Mortuum/IdeaProjects/telegram_bot/table.xlsx");
+                    Set<String> buttonNamesSet = new LinkedHashSet<>(parser.getDiseaseNameArray());
+                    ArrayList<String> buttonNamesList = new ArrayList<>();
+                    ArrayList<String> callDataList = new ArrayList<>(parser.getCallDataArray());
+                    Iterator<String> iterator = buttonNamesSet.iterator();
+                    ArrayList<String> callDataListNew = new ArrayList<>();
+                    while (iterator.hasNext()){
+                        buttonNamesList.add(iterator.next());
+                    }
+                    for (int i=0; i < callDataList.size(); i++){
+                        if(callDataList.get(i).startsWith("inf")){
+                            callDataListNew.add(callDataList.get(i));
+                        }
+                    }
                     executeMessage(sendMessageService.createButtonsMessage(update, START_DISEASES_MESSAGE,
-                            new String[]{MENINGOC, ASTHMA}, new String[]{"inf-0", "inf-1"}));
-                        parser.readFromExcel("C:/Users/Mortuum/IdeaProjects/telegram_bot/table.xlsx");
+                           buttonNamesList, callDataListNew));
                 }
                 case START_PLANNING ->
-                        executeMessage(sendMessageService.createButtonsMessage(update,START_DISEASES_MESSAGE,
-                                new String[]{MENINGOC,ASTHMA},new String[]{"inf-0","inf-1"}));
+                       /* executeMessage(sendMessageService.createButtonsMessage(update,START_DISEASES_MESSAGE,
+                                new String[]{MENINGOC,ASTHMA},new String[]{"inf-0","inf-1"}));*/
+                        System.out.println("");
                 case HELP -> executeMessage(sendMessageService.createHelpMessage(update));
                 case SHOW_DEALS -> {
                     executeMessage(sendMessageService.createShowMessage(update));
@@ -150,27 +169,9 @@ public class TGJavaBotController extends TelegramLongPollingBot {
 
         if(update.hasCallbackQuery()) {
             String callDate = update.getCallbackQuery().getData();
-            /*,"1-2","1-3","1-4","1-5","1-6","2-1","2-2","2-3",
-                    "3-1","3-2","3-3","4-1","4-2","5-1","5-2","5-3","6-1","6-2","6-3","6-4",
-                    "7-1","7-2","8-1","8-2"*/
             HashMap<String, String[]> scheduler = new HashMap<>();
-            String[] mass = new String[]{};
-                putInHash(scheduler, parser.getCallDataArray(),
-                        new String[]{parser.getQuestionArray().get(0) +"/" + parser.getDiseaseNameArray().get(1) + "/"
-                                + Arrays.toString(new String[]{"сыпи нет",
-                                "не геморрагическая",
-                                "геморрагическая  мелкоточечная",
-                                "сочетание  геморрагической  и другой",
-                                "геморрагическая  звездчатая",
-                                "геморрагическая  сливная"}) + "/" +
-                                Arrays.toString(new String[]{"1-1", "1-2", "1-3", "1-4", "1-5", "1-6"}),
-                                parser.getQuestionArray().get(1) +"/" + parser.getDiseaseNameArray().get(2) + "/"
-                                        + Arrays.toString(new String[]{"на конечностях", "на лице",
-                                        "на туловище", "равномерно по телу"}) + "/" +
-                                        Arrays.toString(new String[]{"2-1", "2-2", "2-3", "2-4"}) + "/-9",
-                                parser.getQuestionArray().get(2) +"/"+ parser.getDiseaseNameArray().get(2) + "/"
-                                        + Arrays.toString(new String[]{"бледная", "яркая", "циниточная"}) + "/" +
-                                        Arrays.toString(new String[]{"3-1", "3-2", "3-3"}) + "/-8"});
+            System.out.println(callDate);
+            parserArray(scheduler);
            /* new String[]{"Для начала определим наличие и характер сыпи:/" + MENINGOC + "/"
                     + Arrays.toString(new String[]{"сыпи нет",
                     "не геморрагическая",
@@ -216,12 +217,15 @@ public class TGJavaBotController extends TelegramLongPollingBot {
                     + Arrays.toString(new String[]{"бледная", "яркая",
                     "циниточная"}) + "/4" + "/" +
                     Arrays.toString(new String[]{"2-1", "2-2", "2-3"}) + "/-8" + "/metric2"});*/
-
             for (String sch : scheduler.get(callDate)) {
                 String[] sched = sch.split("/");
-                createButtonNameArr(sched[2], sched[3]);
-                executeMessage(sendMessageService.createInlineButtonsMessage(update, sched[0],
-                        buttonNames, buttonCallDateNames));
+                    createButtonNameArr(sched[2], sched[3]);
+                        if(sched[2].equals("-")) {
+                            executeMessage(sendMessageService.createExitMessage(update, sched[0]));
+                        }else {
+                            executeMessage(sendMessageService.createInlineButtonsMessage(update, sched[0],
+                                    buttonNames, buttonCallDateNames));
+                        }
                 if (callDate.startsWith("inf")) {
                     insertDiseases(sched[1], update);
                 } else {
@@ -229,7 +233,7 @@ public class TGJavaBotController extends TelegramLongPollingBot {
                 }
 
             }
-            System.out.println(callDate);
+
         }
                 /* if (sched[1].equals(MENINGOC)) {
                             createButtonNameArr(sched[2],sched[3],sched[4]);

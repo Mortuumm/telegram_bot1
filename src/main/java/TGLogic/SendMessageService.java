@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import static TGConstant.Constant.*;
 import static java.lang.Math.toIntExact;
@@ -34,24 +35,22 @@ public class SendMessageService {
         editMessageText.setChatId(chatId);
         editMessageText.setMessageId(toIntExact(mesId));
         editMessageText.setText(infection);
-
         InlineKeyboardButton[] buttons = new InlineKeyboardButton[buttonNumbers.length];
+        //System.out.println(buttonNumbers.length);
         for(int i=0; i < buttonNumbers.length; i++ ){
             buttons[i] = tgButtonsLogic.createInlineButton(buttonNames[i],buttonNumbers[i]);
-
         }
         InlineKeyboardMarkup replyKeyboardMarkup = tgButtonsLogic.setGenerateInlineKeybord(buttons);
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
-
         return editMessageText;
     }
 
     public SendMessage createButtonsMessage(Update update, String infection,
-                                                      String[] buttonNames, String[] buttonNumbers){
+                                            ArrayList<String> buttonNames, ArrayList<String> buttonNumbers){
         SendMessage sendMessage = createSimpleMessage(update,infection );
-        InlineKeyboardButton[] buttons = new InlineKeyboardButton[buttonNumbers.length];
-        for(int i=0; i < buttonNumbers.length; i++ ){
-            buttons[i] = tgButtonsLogic.createInlineButton(buttonNames[i],buttonNumbers[i]);
+        InlineKeyboardButton[] buttons = new InlineKeyboardButton[buttonNumbers.size()];
+        for(int i=0; i < buttonNumbers.size(); i++ ){
+            buttons[i] = tgButtonsLogic.createInlineButton(buttonNames.get(i),buttonNumbers.get(i));
             //tgButtonsLogic.addInlineButtons(buttons[i]);
         }
         InlineKeyboardMarkup replyKeyboardMarkup = tgButtonsLogic.setGenerateInlineKeybord(buttons);
@@ -97,6 +96,16 @@ public class SendMessageService {
         sendPhoto.setChatId(update.getMessage().getChatId());
         sendPhoto.setPhoto(photo);
         return sendPhoto;
+    }
+
+    public EditMessageText createExitMessage(Update update, String infection){
+        EditMessageText editMessageText = new EditMessageText();
+        long mesId = update.getCallbackQuery().getMessage().getMessageId();
+        long chatId = update.getCallbackQuery().getMessage().getChatId();
+        editMessageText.setChatId(chatId);
+        editMessageText.setMessageId(toIntExact(mesId));
+        editMessageText.setText(infection);
+        return editMessageText;
     }
 /*
     public EditMessageText createSelectMessage(Update update){
@@ -192,7 +201,7 @@ public class SendMessageService {
         InlineKeyboardButton button3 = tgButtonsLogic.
                 createInlineButton("на туловище","1-3");
         InlineKeyboardButton button4 = tgButtonsLogic.
-                createInlineButton("равномерно по телу","1-3");
+                createInlineButton("равномерно по телу","1-4");
 
         InlineKeyboardMarkup replyKeyboardMarkup =
                 tgButtonsLogic.setInlineKeyboard(
@@ -346,16 +355,6 @@ public class SendMessageService {
                                 tgButtonsLogic.addInlineButtons(button2));
 
         editMessageText.setReplyMarkup(replyKeyboardMarkup);
-        return editMessageText;
-    }
-
-    public EditMessageText createMeningocMessage8(Update update, String infection){
-        EditMessageText editMessageText = new EditMessageText();
-        long mesId = update.getCallbackQuery().getMessage().getMessageId();
-        long chatId = update.getCallbackQuery().getMessage().getChatId();
-        editMessageText.setChatId(chatId);
-        editMessageText.setMessageId(toIntExact(mesId));
-        editMessageText.setText(infection);
         return editMessageText;
     }
 
