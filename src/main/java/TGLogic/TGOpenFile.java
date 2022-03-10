@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public class TGOpenFile extends JFrame{
     FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -12,10 +13,6 @@ public class TGOpenFile extends JFrame{
 
     private  JFileChooser fileChooser = null;
     String path ;
-
-    public String getPath() {
-        return path;
-    }
 
     private final String[][] FILTERS = {{"xlsx"}};
     public TGOpenFile() {
@@ -36,7 +33,6 @@ public class TGOpenFile extends JFrame{
         // Вывод окна на экран
         setSize(360, 110);
         setVisible(true);
-        path= String.valueOf(fileChooser.getSelectedFile());
     }
 
     private void addFileChooserListeners() {
@@ -51,10 +47,18 @@ public class TGOpenFile extends JFrame{
                 if (result == JFileChooser.APPROVE_OPTION )
                     JOptionPane.showMessageDialog(TGOpenFile.this,
                             "Файл был выбран");
-
-                System.out.println(fileChooser.getSelectedFile());
+                setPather(fileChooser.getSelectedFile().getPath());
+                System.out.println(getPather());
             }
+
         });
+    }
+    public String getPather() {
+        return path;
+    }
+
+    public void setPather(String path) {
+        this.path = path;
     }
 
 }

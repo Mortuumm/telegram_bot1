@@ -9,7 +9,6 @@ import java.io.*;
 import java.util.*;
 
 public class Parser {
-    TGOpenFile tgOpenFile = new TGOpenFile();
     ArrayList<String> callDataArray = new ArrayList<>();
     ArrayList<String> questionArray = new ArrayList<>();
     ArrayList<String> diseaseNameArray = new ArrayList<>();
@@ -17,9 +16,9 @@ public class Parser {
     ArrayList<String> callBackButtonsArray = new ArrayList<>();
     ArrayList<String> marksArray = new ArrayList<>();
     public void readFromExcel(String path) {
-        File file = new File(tgOpenFile.getPath());
-        String value = "";
-        XSSFWorkbook wb = null;
+        File file = new File(path);
+        String value ;
+        XSSFWorkbook  wb = null;
         try {
             wb = new XSSFWorkbook(new FileInputStream(path));
         } catch (IOException e) {

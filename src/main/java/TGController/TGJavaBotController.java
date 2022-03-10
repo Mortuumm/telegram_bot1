@@ -4,12 +4,14 @@ import DataBaseLogic.DataBaseConnection;
 import TGLogic.SendMessageService;
 import TGLogic.TGOpenFile;
 import TGParser.Parser;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
 import java.sql.SQLException;
 import java.util.*;
 
@@ -18,13 +20,17 @@ import static java.lang.Integer.parseInt;
 
 
 public class TGJavaBotController extends TelegramLongPollingBot {
+    TGOpenFile tgOpenFile = new TGOpenFile();
 
     public TGJavaBotController(DefaultBotOptions options) { super(options);
-        new TGOpenFile();
-        parser.readFromExcel("C:/Users/Mortuum/IdeaProjects/telegram_bot/table.xlsx");
+
     }
+
     //TGOpenFile tgOpenFile = new TGOpenFile();
+
     public Integer user_id = 1;
+    //"C:/Users/Mortuum/IdeaProjects/telegram_bot/table.xlsx"
+    String path ;
     String[] excelArray = {};
     String[] buttonNames  = {};
     String[] buttonCallDateNames = {};
@@ -121,10 +127,13 @@ public class TGJavaBotController extends TelegramLongPollingBot {
             }
             switch (update.getMessage().getText()) {
                 case START -> {
+                    path = tgOpenFile.getPather();
+                    parser.readFromExcel(path);
                     executeMessage(sendMessageService.createGreetingInformation(update));
                 }
                 case START_PLANNING -> {
                     ArrayList<String> buttonNamesList = new ArrayList<>(buttonNamesSet);
+                    parser.readFromExcel(path);
                     executeMessage(sendMessageService.createButtonsMessage(update, START_DISEASES_MESSAGE,
                             buttonNamesList, callDataListNew));
 
@@ -212,7 +221,7 @@ public class TGJavaBotController extends TelegramLongPollingBot {
                 if (callDate.startsWith("inf")) {
                     insertDiseases(sched[1], update);
                 } else {
-                    updateMetrics(parseInt(String.valueOf(callDate.charAt(0))),parseInt(sched[4]), update);
+                    updateMetrics(parseInt(String.valueOf(callDate.charAt(callDate.length()-1))),parseInt(sched[4]), update);
                 }
 
             }
