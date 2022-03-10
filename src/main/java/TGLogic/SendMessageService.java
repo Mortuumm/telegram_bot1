@@ -1,5 +1,6 @@
 package TGLogic;
 
+import org.checkerframework.checker.units.qual.A;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 
 import static TGConstant.Constant.*;
 import static java.lang.Math.toIntExact;
-import static java.util.Arrays.asList;
 
 public class SendMessageService {
     private final File SHOW_LINK =  new File("D:\\DOWLOADS\\6I8qlFecAkw.jpg");
@@ -21,8 +21,10 @@ public class SendMessageService {
 
     public SendMessage createGreetingInformation(Update update){
         SendMessage message = createSimpleMessage(update,GREETING_MESSAGE);
-        ReplyKeyboardMarkup keyboardMarkup = tgButtonsLogic.createButtons(
-                asList(START_PLANNING,SHOW_DEALS));
+        ArrayList<String> buttonList = new ArrayList<>();
+        buttonList.add(START_PLANNING);
+        buttonList.add(SHOW_DEALS);
+        ReplyKeyboardMarkup keyboardMarkup = tgButtonsLogic.setButtons(tgButtonsLogic.createCommonButtons(buttonList));
         message.setReplyMarkup(keyboardMarkup);
         return message;
     }
@@ -36,7 +38,6 @@ public class SendMessageService {
         editMessageText.setMessageId(toIntExact(mesId));
         editMessageText.setText(infection);
         InlineKeyboardButton[] buttons = new InlineKeyboardButton[buttonNumbers.length];
-        //System.out.println(buttonNumbers.length);
         for(int i=0; i < buttonNumbers.length; i++ ){
             buttons[i] = tgButtonsLogic.createInlineButton(buttonNames[i],buttonNumbers[i]);
         }
@@ -118,13 +119,6 @@ public class SendMessageService {
         return editMessageText;
     }*/
 
-    /*public AnswerCallbackQuery sendAnswerCallBack(String text, boolean alert, CallbackQuery callbackQuery){
-        AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
-        answerCallbackQuery.setCallbackQueryId(callbackQuery.getId());
-        answerCallbackQuery.setShowAlert(alert);
-        answerCallbackQuery.setText(text);
-        return answerCallbackQuery;
-    }*/
 
    /* public EditMessageText createMeningocMessage(Update update, String infection) {
         EditMessageText editMessageText = new EditMessageText();
@@ -639,18 +633,5 @@ public class SendMessageService {
         return editMessageText;
     }*/
 
-    /*public EditMessageText createAsthmaMessages(Update update,String infection){
-        HashMap<String[],String[]> schedulerMessages= new HashMap<>();
-        schedulerMessages.put(new String[]{}, new String[]{"10:15/11:50/пр.Корпоративные системы",
-                "12:00/13:35/лаб.Корпоративные системы"});
-        schedulerMessages.put(new String[]{}, new String[]{"10:15/11:50/пр.Корпоративные системы",
-                "12:00/13:35/лаб.Корпоративные системы"});
-        schedulerMessages.put(new String[]{}, new String[]{"10:15/11:50/пр.Корпоративные системы",
-                "12:00/13:35/лаб.Корпоративные системы"});
-        schedulerMessages.put(new String[]{}, new String[]{"10:15/11:50/пр.Корпоративные системы",
-                "12:00/13:35/лаб.Корпоративные системы"});
-        schedulerMessages.put(new String[]{}, new String[]{"10:15/11:50/пр.Корпоративные системы",
-                "12:00/13:35/лаб.Корпоративные системы"});
-    }*/
 
 }

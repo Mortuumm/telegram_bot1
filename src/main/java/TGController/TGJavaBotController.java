@@ -2,29 +2,28 @@ package TGController;
 
 import DataBaseLogic.DataBaseConnection;
 import TGLogic.SendMessageService;
+import TGLogic.TGOpenFile;
 import TGParser.Parser;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
 import static TGConstant.Constant.*;
 import static java.lang.Integer.parseInt;
 
+
 public class TGJavaBotController extends TelegramLongPollingBot {
 
-    public TGJavaBotController(DefaultBotOptions options) { super(options); }
-
+    public TGJavaBotController(DefaultBotOptions options) { super(options);
+        new TGOpenFile();
+        parser.readFromExcel("C:/Users/Mortuum/IdeaProjects/telegram_bot/table.xlsx");
+    }
+    //TGOpenFile tgOpenFile = new TGOpenFile();
     public Integer user_id = 1;
     String[] excelArray = {};
     String[] buttonNames  = {};
@@ -32,16 +31,6 @@ public class TGJavaBotController extends TelegramLongPollingBot {
     SendMessageService sendMessageService = new SendMessageService();
     Parser parser = new Parser();
 
-    public  void readFromExcel(String file) throws IOException {
-        XSSFWorkbook myExcelBook = null;
-        myExcelBook = new XSSFWorkbook(new FileInputStream(file));
-        XSSFSheet myExcelSheet = myExcelBook.getSheetAt(0);
-        XSSFRow row = myExcelSheet.getRow(0);
-        String sched = "";
-        for (int i=0; i < parser.getCallDataArray().size(); i++) {
-                excelArray = row.getCell(i).getStringCellValue().split(",");
-        }
-    }
     public  void updateMetrics(int i, int number,Update update){
         try {
                 DataBaseConnection.updateDb("UPDATE test_bd.test_table " +
@@ -119,33 +108,27 @@ public class TGJavaBotController extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if(update.hasMessage() && update.getMessage().hasText()){
-            //System.out.println(update.getMessage().getFrom().getId());
-            //System.out.println(update.getMessage().getFrom());
-           // user_id = update.getMessage().getFrom().getId();
+            System.out.println(update.getMessage().getFrom().getId());
+            System.out.println(update.getMessage().getFrom());
+            user_id = update.getMessage().getFrom().getId();
+            ArrayList<String> callDataListNew = new ArrayList<>();
+            Set<String> buttonNamesSet = new LinkedHashSet<>(parser.getDiseaseNameArray());
+            ArrayList<String> callDataList = new ArrayList<>(parser.getCallDataArray());
+            for (int i = 0; i < callDataList.size(); i++) {
+                if (callDataList.get(i).startsWith("inf")) {
+                    callDataListNew.add(callDataList.get(i));
+                }
+            }
             switch (update.getMessage().getText()) {
                 case START -> {
-                    /*executeMessage(sendMessageService.createGreetingInformation(update));*/
-                    parser.readFromExcel("C:/Users/Mortuum/IdeaProjects/telegram_bot/table.xlsx");
-                    Set<String> buttonNamesSet = new LinkedHashSet<>(parser.getDiseaseNameArray());
-                    ArrayList<String> buttonNamesList = new ArrayList<>();
-                    ArrayList<String> callDataList = new ArrayList<>(parser.getCallDataArray());
-                    Iterator<String> iterator = buttonNamesSet.iterator();
-                    ArrayList<String> callDataListNew = new ArrayList<>();
-                    while (iterator.hasNext()){
-                        buttonNamesList.add(iterator.next());
-                    }
-                    for (int i=0; i < callDataList.size(); i++){
-                        if(callDataList.get(i).startsWith("inf")){
-                            callDataListNew.add(callDataList.get(i));
-                        }
-                    }
-                    executeMessage(sendMessageService.createButtonsMessage(update, START_DISEASES_MESSAGE,
-                           buttonNamesList, callDataListNew));
+                    executeMessage(sendMessageService.createGreetingInformation(update));
                 }
-                case START_PLANNING ->
-                       /* executeMessage(sendMessageService.createButtonsMessage(update,START_DISEASES_MESSAGE,
-                                new String[]{MENINGOC,ASTHMA},new String[]{"inf-0","inf-1"}));*/
-                        System.out.println("");
+                case START_PLANNING -> {
+                    ArrayList<String> buttonNamesList = new ArrayList<>(buttonNamesSet);
+                    executeMessage(sendMessageService.createButtonsMessage(update, START_DISEASES_MESSAGE,
+                            buttonNamesList, callDataListNew));
+
+                }
                 case HELP -> executeMessage(sendMessageService.createHelpMessage(update));
                 case SHOW_DEALS -> {
                     executeMessage(sendMessageService.createShowMessage(update));
@@ -235,24 +218,6 @@ public class TGJavaBotController extends TelegramLongPollingBot {
             }
 
         }
-                /* if (sched[1].equals(MENINGOC)) {
-                            createButtonNameArr(sched[2],sched[3],sched[4]);
-                            executeMessage(sendMessageService.createInlineButtonsMessage(update, sched[0],parseInt(sched[3]),
-                                    buttonNames, buttonCallDateNames));
-                            insertDiseases(sched[1], update);
-                        }
-                        else if(sched[1].equals(ASTHMA)){
-                            createButtonNameArr(sched[2],sched[3],sched[4]);
-                            executeMessage(sendMessageService.createInlineButtonsMessage(update, sched[0],parseInt(sched[3]),
-                                    buttonNames,buttonCallDateNames));
-                            insertDiseases(ASTHMA,update);
-                        }
-                    else {
-                        createButtonNameArr(sched[2],sched[3],sched[4]);
-                            executeMessage(sendMessageService.createInlineButtonsMessage(update, sched[0],parseInt(sched[3]),
-                                    buttonNames,buttonCallDateNames));
-                            updateMetrics(sched[1],parseInt(sched[3]),update);
-                        }*/
 
            /* EditMessageText meningocMessage = sendMessageService.createMeningocMessage(update,
                     "Для начала определим наличие и характер сыпи:");

@@ -1,16 +1,15 @@
 package TGParser;
+import TGLogic.TGOpenFile;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import java.io.*;
 import java.util.*;
 
-import static org.apache.commons.lang.StringUtils.split;
-
 public class Parser {
+    TGOpenFile tgOpenFile = new TGOpenFile();
     ArrayList<String> callDataArray = new ArrayList<>();
     ArrayList<String> questionArray = new ArrayList<>();
     ArrayList<String> diseaseNameArray = new ArrayList<>();
@@ -18,7 +17,7 @@ public class Parser {
     ArrayList<String> callBackButtonsArray = new ArrayList<>();
     ArrayList<String> marksArray = new ArrayList<>();
     public void readFromExcel(String path) {
-        File file = new File(path);
+        File file = new File(tgOpenFile.getPath());
         String value = "";
         XSSFWorkbook wb = null;
         try {
@@ -91,7 +90,6 @@ public class Parser {
                         arrayList.add(str);
                     }
                 }*/
-
         }
 
     public ArrayList<String> getCallDataArray() {
