@@ -8,13 +8,29 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.util.*;
 
-public class Parser {
+public class Parser extends Thread{
     ArrayList<String> callDataArray = new ArrayList<>();
     ArrayList<String> questionArray = new ArrayList<>();
     ArrayList<String> diseaseNameArray = new ArrayList<>();
     ArrayList<String> buttonsNameArray = new ArrayList<>();
     ArrayList<String> callBackButtonsArray = new ArrayList<>();
     ArrayList<String> marksArray = new ArrayList<>();
+    @Override
+    public void run() {
+       //readFromExcel(tgOpenFile.getPather());
+       // readFromExcel("C:/Users/Mortuum/IdeaProjects/telegram_bot/table.xlsx");
+    }
+
+    /*public static void chooseFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        int returnValue = fileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+
+            keep = selectedFile.getName();
+            System.out.println(keep);
+        }
+    }*/
     public void readFromExcel(String path) {
         File file = new File(path);
         String value ;
@@ -24,6 +40,7 @@ public class Parser {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        assert wb != null;
         XSSFSheet sheet = wb.getSheetAt(0);
         Row rowCallback;
         Row rowQuestion;
@@ -82,13 +99,6 @@ public class Parser {
                 marksArray.add(MarksCell.getStringCellValue());
             }
         }
-            /*while (cellIterator.hasNext()) {
-                    cell = cellIterator.next();
-                    if (cell.getCellType() == CellType.STRING) {
-                        str = cell.getStringCellValue();
-                        arrayList.add(str);
-                    }
-                }*/
         }
 
     public ArrayList<String> getCallDataArray() {
