@@ -1,6 +1,5 @@
 package TGLogic;
 
-import TGParser.Parser;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -36,26 +35,32 @@ public class TGOpenFile extends JFrame{
 
     private final String[][] FILTERS = {{"xlsx"}};
     public TGOpenFile() {
-        super("File Chooser");
+        super("Telegram Bot");
 
     }
     public void start(){
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        // Кнопка создания диалогового окна для выбора директории
-        btnOpenDir = new JButton("Открыть директорию");
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            // Кнопка создания диалогового окна для выбора директории
+            btnOpenDir = new JButton("Открыть директорию");
+            // Создание экземпляра JFileChooser
+            fileChooser = new JFileChooser();
+            // Подключение слушателей к кнопкам
+            addFileChooserListeners();
 
-        // Создание экземпляра JFileChooser
-        fileChooser = new JFileChooser();
-        // Подключение слушателей к кнопкам
-        addFileChooserListeners();
+            // Размещение кнопок в интерфейсе
+            JPanel contents = new JPanel();
+            contents.add(btnOpenDir   );
+            setContentPane(contents);
+            setLocationRelativeTo(null);
+            setVisible(true);
+            setResizable(false);
+            setSize(360, 110);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        // Размещение кнопок в интерфейсе
-        JPanel contents = new JPanel();
-        contents.add(btnOpenDir   );
-        setContentPane(contents);
-        // Вывод окна на экран
-        setSize(360, 110);
-        setVisible(true);
     }
     public void readFromExcel(String path) {
         File file = new File(path);
@@ -106,6 +111,7 @@ public class TGOpenFile extends JFrame{
                 callDataArray.add(callBackCell.getStringCellValue());
             }
         }
+
         for (int i=1; i < cn;i++){
             QuestionCell = rowQuestion.getCell(i);
             if (QuestionCell.getCellType() == CellType.STRING) {
