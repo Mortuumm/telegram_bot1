@@ -8,8 +8,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -162,24 +160,20 @@ public class TGOpenFile extends JFrame{
         }
     }
     private void addFileChooserListeners() {
-        btnOpenDir.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        btnOpenDir.addActionListener(e -> {
+            fileChooser.setDialogTitle("Выбор файла");
+            fileChooser.setFileFilter(filter);
+            // Определение режима - только каталог
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            int result = fileChooser.showOpenDialog(TGOpenFile.this);
+            // Если директория выбрана, покажем ее в сообщении
+            if (result == JFileChooser.APPROVE_OPTION ) {
+                JOptionPane.showMessageDialog(TGOpenFile.this,
+                        "Файл был выбран");
 
-                fileChooser.setDialogTitle("Выбор файла");
-                fileChooser.setFileFilter(filter);
-                // Определение режима - только каталог
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                int result = fileChooser.showOpenDialog(TGOpenFile.this);
-                // Если директория выбрана, покажем ее в сообщении
-                if (result == JFileChooser.APPROVE_OPTION ) {
-                    JOptionPane.showMessageDialog(TGOpenFile.this,
-                            "Файл был выбран");
-
-                    setPather(fileChooser.getSelectedFile().getPath());
-                    System.out.println(getPather());
-                    readFromExcel(getPather());
-                }
-
+                setPather(fileChooser.getSelectedFile().getPath());
+                System.out.println(getPather());
+                readFromExcel(getPather());
             }
 
         });
