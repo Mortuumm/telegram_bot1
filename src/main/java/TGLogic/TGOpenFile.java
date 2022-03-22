@@ -164,6 +164,7 @@ public class TGOpenFile extends JFrame{
     private void addFileChooserListeners() {
         btnOpenDir.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+
                 fileChooser.setDialogTitle("Выбор файла");
                 fileChooser.setFileFilter(filter);
                 // Определение режима - только каталог
