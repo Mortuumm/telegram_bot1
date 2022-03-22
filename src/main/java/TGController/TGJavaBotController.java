@@ -2,6 +2,7 @@ package TGController;
 
 import DataBaseLogic.DataBaseConnection;
 import TGLogic.SendMessageService;
+import TGLogic.TGMath;
 import TGLogic.TGOpenFile;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -13,7 +14,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Logger;
-
 import static TGConstant.Constant.*;
 import static java.lang.Integer.parseInt;
 
@@ -21,16 +21,16 @@ import static java.lang.Integer.parseInt;
 public class TGJavaBotController extends TelegramLongPollingBot {
     private static final Logger log = Logger.getLogger(String.valueOf(TGJavaBotController.class));
     TGOpenFile tgOpenFile = new TGOpenFile();
+    TGMath tgMath = new TGMath();
+    
     public TGJavaBotController(DefaultBotOptions options) { super(options);
         tgOpenFile.start();
-        //path = "C:/Users/Mortuum/Documents/table.xlsx";
     }
 
     public Integer user_id = 1;
     String path ;
-    //String[] excelArray = {};
-    String[] buttonNames  = {};
-    String[] buttonCallDateNames = {};
+    ArrayList<String> buttonNames = new ArrayList<>();
+    ArrayList<String> buttonCallDateNames = new ArrayList<>();
     ArrayList<Integer> testNumbers = new ArrayList<>();
     SendMessageService sendMessageService = new SendMessageService();
 
@@ -44,7 +44,7 @@ public class TGJavaBotController extends TelegramLongPollingBot {
             throwables.printStackTrace();
         }
     }
-    public  void insertDiseases(String diseas,Update update){
+    public  void insertDiseases(String diseas, Update update){
         try {
             DataBaseConnection.updateDb("INSERT INTO test_bd.test_table " +
                     "(test_bd.test_table.client_message, " +
@@ -56,16 +56,11 @@ public class TGJavaBotController extends TelegramLongPollingBot {
     }
 
     public void createButtonNameArr(String sched2, String sched3){
-        /*sched2 = sched2.substring(1);
-        sched2 = sched2.substring(0, sched2.length()-1);
-        sched3 = sched3.substring(1);
-        sched3 = sched3.substring(0, sched3.length()-1);
-        sched3 = sched3.replaceAll(" ","");*/
         for(int i=0; i < sched2.length(); i++){
-            buttonNames = sched2.split(",");
+            buttonNames = new ArrayList<>(Arrays.asList(sched2.split(",")));
         }
         for(int i=0; i < sched3.length(); i++){
-            buttonCallDateNames = sched3.split(",");
+            buttonCallDateNames = new ArrayList<>(Arrays.asList(sched3.split(",")));
         }
 
     }
@@ -80,20 +75,7 @@ public class TGJavaBotController extends TelegramLongPollingBot {
                                 +tgOpenFile.getMarksArray().get(i)});
         }
     }
-    public String  parsingInfoArray(){
-        int sum = 0;
-        String number = "";
-        for (Integer testNumber : testNumbers) {
-            sum = sum + testNumber;
-        }
-        for(int i=0; i < tgOpenFile.getCriticalArray().size(); i++){
-            if(sum > parseInt(tgOpenFile.getCriticalArray().get(i))){
-                number = tgOpenFile.getNumberArray().get(i);
-            }
 
-        }
-        return number;
-    }
     public void putInHash(HashMap<String, String[]> scheduler,
                           String callBack, String[] descriptions){
         for (String description : descriptions) {
@@ -150,10 +132,13 @@ public class TGJavaBotController extends TelegramLongPollingBot {
             for (String sch : scheduler.get(callDate)) {
                 String[] sched = sch.split("/");
                     createButtonNameArr(sched[2], sched[3]);
+                testNumbers.add(parseInt(sched[4]));
                         if(sched[2].equals("-")) {
                             executeMessage(sendMessageService.createExitMessage(update, sched[0]
                                     + " Для дальнейшей консультации обратитесь по данному номеру "
-                                    + parsingInfoArray()));
+                                    + tgMath.parsingInfoArray(testNumbers,tgOpenFile)));
+                            System.out.println(testNumbers);
+
                         }else {
                             executeMessage(sendMessageService.createInlineButtonsMessage(update, sched[0],
                                     buttonNames, buttonCallDateNames));
@@ -162,11 +147,9 @@ public class TGJavaBotController extends TelegramLongPollingBot {
                     insertDiseases(sched[1], update);
                 } else {
                     updateMetrics(parseInt(String.valueOf(callDate.charAt(1))),parseInt(sched[4]), update);
-                    testNumbers.add(parseInt(sched[4]));
                 }
 
             }
-            System.out.println(parsingInfoArray());
         }
 
            /* EditMessageText meningocMessage = sendMessageService.createMeningocMessage(update,
