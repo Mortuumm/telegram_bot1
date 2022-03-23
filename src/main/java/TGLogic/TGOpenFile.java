@@ -41,7 +41,7 @@ public class TGOpenFile extends JFrame{
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             setDefaultCloseOperation(EXIT_ON_CLOSE);
             // Кнопка создания диалогового окна для выбора директории
-            btnOpenDir = new JButton("Открыть директорию");
+            btnOpenDir = new JButton("Выбрать файл");
             // Создание экземпляра JFileChooser
             fileChooser = new JFileChooser();
             // Подключение слушателей к кнопкам
@@ -61,6 +61,14 @@ public class TGOpenFile extends JFrame{
 
     }
     public void readFromExcel(String path) {
+        callDataArray.clear();
+        criticalArray.clear();
+        callBackButtonsArray.clear();
+        buttonsNameArray.clear();
+        healthArray.clear();
+        marksArray.clear();
+        questionArray.clear();
+        diseaseNameArray.clear();
         File file = new File(path);
         String value ;
         XSSFWorkbook wb = null;
@@ -101,52 +109,51 @@ public class TGOpenFile extends JFrame{
         rowCritical = sheet.getRow(6);
         rowHealth = sheet.getRow(7);
         rowNumber= sheet.getRow(8);
-        int cn = rowCallback.getLastCellNum();
         int nn = rowCritical.getLastCellNum();
-        for (int i=1; i < cn;i++){
+        for (int i=1; i < rowCallback.getLastCellNum();i++){
             callBackCell = rowCallback.getCell(i);
             if (callBackCell.getCellType() == CellType.STRING) {
                 callDataArray.add(callBackCell.getStringCellValue());
             }
         }
 
-        for (int i=1; i < cn;i++){
+        for (int i=1; i < rowQuestion.getLastCellNum();i++){
             QuestionCell = rowQuestion.getCell(i);
             if (QuestionCell.getCellType() == CellType.STRING) {
                 questionArray.add(QuestionCell.getStringCellValue());
             }
         }
-        for (int i=1; i < cn;i++){
+        for (int i=1; i < rowDiseaseName.getLastCellNum();i++){
             DiseaseNameCell = rowDiseaseName.getCell(i);
             if (DiseaseNameCell.getCellType() == CellType.STRING) {
                 diseaseNameArray.add(DiseaseNameCell.getStringCellValue());
             }
         }
-        for (int i=1; i < cn;i++){
+        for (int i=1; i < rowButtonsName.getLastCellNum();i++){
             ButtonsNameCell = rowButtonsName.getCell(i);
             if (ButtonsNameCell.getCellType() == CellType.STRING) {
                 buttonsNameArray.add(ButtonsNameCell.getStringCellValue());
             }
         }
-        for (int i=1; i < cn;i++){
+        for (int i=1; i < rowCallbackButtons.getLastCellNum();i++){
             CallbackButtonsCell = rowCallbackButtons.getCell(i);
             if (CallbackButtonsCell.getCellType() == CellType.STRING) {
                 callBackButtonsArray.add(CallbackButtonsCell.getStringCellValue());
             }
         }
-        for (int i=1; i < cn;i++){
+        for (int i=1; i < rowMarks.getLastCellNum();i++){
             MarksCell = rowMarks.getCell(i);
             if (MarksCell.getCellType() == CellType.STRING) {
                 marksArray.add(MarksCell.getStringCellValue());
             }
         }
-        for (int i=1; i < nn; i++){
+        for (int i=1; i < rowCritical.getLastCellNum(); i++){
             CriticalCell = rowCritical.getCell(i);
             if(CriticalCell.getCellType() == CellType.STRING){
                 criticalArray.add(CriticalCell.getStringCellValue());
             }
         }
-        for (int i=1; i < nn; i++){
+        for (int i=1; i < rowHealth.getLastCellNum(); i++){
             HealthCell = rowHealth.getCell(i);
             if(HealthCell.getCellType() == CellType.STRING){
                 healthArray.add(HealthCell.getStringCellValue());
@@ -161,16 +168,13 @@ public class TGOpenFile extends JFrame{
     }
     private void addFileChooserListeners() {
         btnOpenDir.addActionListener(e -> {
-            fileChooser.setDialogTitle("Выбор файла");
+            fileChooser.setDialogTitle("Выбрать файл");
             fileChooser.setFileFilter(filter);
             // Определение режима - только каталог
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             int result = fileChooser.showOpenDialog(TGOpenFile.this);
             // Если директория выбрана, покажем ее в сообщении
             if (result == JFileChooser.APPROVE_OPTION ) {
-                JOptionPane.showMessageDialog(TGOpenFile.this,
-                        "Файл был выбран");
-
                 setPather(fileChooser.getSelectedFile().getPath());
                 System.out.println(getPather());
                 readFromExcel(getPather());

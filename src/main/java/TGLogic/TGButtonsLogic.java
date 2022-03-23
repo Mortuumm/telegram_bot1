@@ -35,7 +35,7 @@ public class TGButtonsLogic {
         return inlineKeyboardButton;
     }
 
-    public InlineKeyboardMarkup setGenerateInlineKeybord(InlineKeyboardButton[] button){
+    public InlineKeyboardMarkup setGenerateInlineKeybord(ArrayList<InlineKeyboardButton> button){
         List<List<InlineKeyboardButton>> keyBoard = new ArrayList<>();
         for (InlineKeyboardButton inlineKeyboardButton : button) {
             List<InlineKeyboardButton> inlineKeyboardRow = new ArrayList<>();

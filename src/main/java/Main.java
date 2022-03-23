@@ -1,5 +1,4 @@
 import TGController.TGJavaBotController;
-import TGLogic.TGOpenFile;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.ApiContext;
