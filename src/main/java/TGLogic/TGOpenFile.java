@@ -5,13 +5,25 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class TGOpenFile extends JFrame{
@@ -24,18 +36,24 @@ public class TGOpenFile extends JFrame{
     ArrayList<String> criticalArray = new ArrayList<>();
     ArrayList<String> healthArray = new ArrayList<>();
     ArrayList<String> numberArray = new ArrayList<>();
-    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+    FileNameExtensionFilter excel = new FileNameExtensionFilter(
             "Excel", "xlsx");
+    FileNameExtensionFilter json = new FileNameExtensionFilter(
+            "JSON", "json");
+
+    FileNameExtensionFilter xml = new FileNameExtensionFilter(
+            "XML", "xml");
     private  JButton  btnOpenDir    = null;
 
     private  JFileChooser fileChooser = null;
     String path ;
 
     private final String[][] FILTERS = {{"xlsx"}};
+
     public TGOpenFile() {
         super("Telegram Bot");
-
     }
+
     public void start(){
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -60,6 +78,7 @@ public class TGOpenFile extends JFrame{
         }
 
     }
+
     public void readFromExcel(String path) {
         callDataArray.clear();
         criticalArray.clear();
@@ -166,10 +185,123 @@ public class TGOpenFile extends JFrame{
             }
         }
     }
+
+    public void readFromJson(String path){
+        callDataArray.clear();
+        criticalArray.clear();
+        callBackButtonsArray.clear();
+        buttonsNameArray.clear();
+        healthArray.clear();
+        marksArray.clear();
+        questionArray.clear();
+        diseaseNameArray.clear();
+        numberArray.clear();
+        JSONParser jsonParser = new JSONParser();
+
+        try {
+            FileReader file = new FileReader(path);
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(file);
+            JSONArray jsonCallBackArray = (JSONArray) jsonObject.get("CallBackНомер");
+            JSONArray jsonQuestionArray = (JSONArray) jsonObject.get("Вопрос");
+            JSONArray jsonDiseaseNameArray = (JSONArray) jsonObject.get("Название болезни");
+            JSONArray jsonButtonsNameArray = (JSONArray) jsonObject.get("Названия кнопок чере запятую");
+            JSONArray jsonCallBackButtonsArray = (JSONArray) jsonObject.get("CallBackДляСледующихКнопок через запятую");
+            JSONArray jsonMarksArray = (JSONArray) jsonObject.get("Баллы");
+            JSONArray jsonCriticalArray = (JSONArray) jsonObject.get("Критические пороги");
+            JSONArray jsonHealthArray = (JSONArray) jsonObject.get("Оценка здоровья");
+            JSONArray jsoNumberArray = (JSONArray) jsonObject.get("Номер телефона");
+
+            for(Object s: jsonCallBackArray){
+                callDataArray.add(String.valueOf(s));
+            }
+            for(Object s: jsonQuestionArray){
+                questionArray.add(String.valueOf(s));
+            }
+            for(Object s: jsonDiseaseNameArray){
+                diseaseNameArray.add(String.valueOf(s));
+            }
+            for(Object s: jsonButtonsNameArray ){
+                buttonsNameArray.add(String.valueOf(s));
+            }
+            for(Object s: jsonCallBackButtonsArray){
+                callBackButtonsArray.add(String.valueOf(s));
+            }
+            for(Object s: jsonMarksArray){
+                marksArray.add(String.valueOf(s));
+            }
+            for(Object s: jsonCriticalArray){
+                criticalArray.add(String.valueOf(s));
+            }
+            for(Object s: jsonHealthArray){
+                healthArray.add(String.valueOf(s));
+            }
+            for(Object s: jsoNumberArray){
+                numberArray.add(String.valueOf(s));
+            }
+            System.out.println(callDataArray);
+
+
+        } catch (ParseException | IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(callDataArray);
+        System.out.println(callBackButtonsArray);
+
+    }
+
+    public void readFromXML(String path) throws ParserConfigurationException, IOException, SAXException {
+        callDataArray.clear();
+        criticalArray.clear();
+        callBackButtonsArray.clear();
+        buttonsNameArray.clear();
+        healthArray.clear();
+        marksArray.clear();
+        questionArray.clear();
+        diseaseNameArray.clear();
+        numberArray.clear();
+        File fileXML = new File(path);
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(fileXML);
+
+            NodeList nameElement =  document.getElementsByTagName("Metrics");
+
+         callDataArray = setMetricArray(document.getElementsByTagName("CallBackНомер"),callDataArray);
+         questionArray = setMetricArray(document.getElementsByTagName("Вопрос"),questionArray);
+        diseaseNameArray = setMetricArray(document.getElementsByTagName("Название_болезни"),diseaseNameArray);
+       buttonsNameArray = setMetricArray(document.getElementsByTagName("Названия_кнопок_череp_запятую"),buttonsNameArray);
+       callBackButtonsArray = setMetricArray(document.getElementsByTagName("CallBackДляСледующихКнопок_через_запятую"),callBackButtonsArray);
+       marksArray = setMetricArray(document.getElementsByTagName("Баллы"),marksArray);
+       criticalArray = setMetricArray(document.getElementsByTagName("Критические_пороги"),criticalArray);
+       healthArray = setMetricArray(document.getElementsByTagName("Оценка_здоровья"),healthArray);
+       numberArray = setMetricArray(document.getElementsByTagName("Номер_телефона"),numberArray);
+        System.out.println(callBackButtonsArray);
+
+    }
+
+    public ArrayList<String> setMetricArray(NodeList nameList, ArrayList<String> list){
+        for(int i=0; i < nameList.getLength(); i++){
+            if(nameList.item(i).getNodeType() == Node.ELEMENT_NODE){
+                String nameListElement =  nameList.item(i).getTextContent();
+                list = createArray(nameListElement,list);
+            }
+        }
+        return list;
+    }
+    public ArrayList<String> createArray(String stroke, ArrayList<String> list){
+        for(int i=0; i < stroke.length(); i++){
+            //stroke = stroke.replaceAll("\\s+","");
+            stroke = stroke.replaceAll("\"","");
+            list = new ArrayList<>(Arrays.asList(stroke.split(";")));
+        }
+        return list;
+    }
     private void addFileChooserListeners() {
         btnOpenDir.addActionListener(e -> {
             fileChooser.setDialogTitle("Выбрать файл");
-            fileChooser.setFileFilter(filter);
+            fileChooser.addChoosableFileFilter(excel);
+            fileChooser.addChoosableFileFilter(json);
+            fileChooser.addChoosableFileFilter(xml);
             // Определение режима - только каталог
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             int result = fileChooser.showOpenDialog(TGOpenFile.this);
@@ -177,12 +309,25 @@ public class TGOpenFile extends JFrame{
             if (result == JFileChooser.APPROVE_OPTION ) {
                 setPather(fileChooser.getSelectedFile().getPath());
                 System.out.println(getPather());
-                readFromExcel(getPather());
+                if(getPather().contains("xlsx")) {
+                    readFromExcel(getPather());
+                }
+                if(getPather().contains("json")){
+                    readFromJson(getPather());
+                }
+                if(getPather().contains("xml")){
+                    try {
+                        readFromXML(getPather());
+                    } catch (ParserConfigurationException | IOException | SAXException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
             }
 
         });
 
     }
+
     public String getPather() {
         return path;
     }
@@ -190,6 +335,7 @@ public class TGOpenFile extends JFrame{
     public void setPather(String path) {
         this.path = path;
     }
+
     public ArrayList<String> getCallDataArray() {
         return callDataArray;
     }
