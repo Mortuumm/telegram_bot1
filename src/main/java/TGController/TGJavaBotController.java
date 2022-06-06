@@ -2,8 +2,9 @@ package TGController;
 
 import DataBaseLogic.DataBaseConnection;
 import TGLogic.SendMessageService;
-import TGLogic.TGMath;
+import TGMathLogic.*;
 import TGLogic.TGOpenFile;
+import TGMathLogic.Math;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -21,14 +22,20 @@ import static java.lang.Integer.parseInt;
 public class TGJavaBotController extends TelegramLongPollingBot {
     private static final Logger log = Logger.getLogger(String.valueOf(TGJavaBotController.class));
     TGOpenFile tgOpenFile = new TGOpenFile();
-    TGMath tgMath = new TGMath();
-    
+    Math math;
+
+    public void setMath(Math math){
+        this.math = math;
+    }
+    public String startMath(){
+        return math.parsingInfoArray(testNumbers,tgOpenFile);
+    }
     public TGJavaBotController(DefaultBotOptions options) { super(options);
         tgOpenFile.start();
     }
 
     public Integer user_id = 1;
-    String path ;
+    //String path ;
     ArrayList<String> buttonNames = new ArrayList<>();
     ArrayList<String> buttonCallDateNames = new ArrayList<>();
     ArrayList<Integer> testNumbers = new ArrayList<>();
@@ -44,6 +51,7 @@ public class TGJavaBotController extends TelegramLongPollingBot {
             throwables.printStackTrace();
         }
     }
+
     public  void insertDiseases(String diseas, Update update){
         try {
             DataBaseConnection.updateDb("INSERT INTO test_bd.test_table " +
@@ -124,7 +132,7 @@ public class TGJavaBotController extends TelegramLongPollingBot {
             HashMap<String, String[]> scheduler = new HashMap<>();
             System.out.println(callDate);
             parserArray(scheduler);
-
+            setMath(new MathAddStrategy());
             for (String sch : scheduler.get(callDate)) {
                 String[] sched = sch.split("/");
                     createButtonNameArr(sched[2], sched[3]);
@@ -132,7 +140,7 @@ public class TGJavaBotController extends TelegramLongPollingBot {
                         if(sched[2].equals("-")) {
                             executeMessage(sendMessageService.createExitMessage(update, sched[0]
                                     + " Для дальнейшей консультации обратитесь по данному номеру "
-                                    + tgMath.parsingInfoArray(testNumbers,tgOpenFile)));
+                                    + startMath()));
                             System.out.println(testNumbers);
 
                         }else {
