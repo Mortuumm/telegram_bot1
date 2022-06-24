@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import static java.lang.Integer.parseInt;
 
-public class MathAddStrategy implements Math{
+public class TGMathAddStrategy implements TGMath {
 
     @Override
     public String parsingInfoArray(ArrayList<Integer> numbers, TGOpenFile tgOpenFile) {

@@ -1,0 +1,113 @@
+@startuml
+class TGLogic.TGOpenFile {
+~ ArrayList<String> callDataArray
+~ ArrayList<String> questionArray
+~ ArrayList<String> diseaseNameArray
+~ ArrayList<String> buttonsNameArray
+~ ArrayList<String> callBackButtonsArray
+~ ArrayList<String> marksArray
+~ ArrayList<String> criticalArray
+~ ArrayList<String> healthArray
+~ ArrayList<String> numberArray
+~ FileNameExtensionFilter excel
+~ FileNameExtensionFilter json
+~ FileNameExtensionFilter xml
+- JButton btnOpenDir
+- JFileChooser fileChooser
+~ String path
+- String[][] FILTERS
++ void start()
++ void readFromExcel(String)
++ void readFromJson(String)
++ void readFromXML(String)
++ ArrayList<String> setMetricArray(NodeList,ArrayList<String>)
++ ArrayList<String> createArray(String,ArrayList<String>)
+- void addFileChooserListeners()
++ String getPather()
++ void setPather(String)
++ ArrayList<String> getCallDataArray()
++ ArrayList<String> getQuestionArray()
++ ArrayList<String> getDiseaseNameArray()
++ ArrayList<String> getButtonsNameArray()
++ ArrayList<String> getCallBackButtonsArray()
++ ArrayList<String> getMarksArray()
++ ArrayList<String> getCriticalArray()
++ ArrayList<String> getHealthArray()
++ ArrayList<String> getNumberArray()
+}
+class TGController.TGJavaBotController {
+- {static} Logger log
+~ TGOpenFile tgOpenFile
+~ Math math
++ Integer user_id
+~ ArrayList<String> buttonNames
+~ ArrayList<String> buttonCallDateNames
+~ ArrayList<Integer> testNumbers
+~ SendMessageService sendMessageService
++ void setMath(Math)
++ String startMath()
++ void updateMetrics(int,int,Update)
++ void insertDiseases(String,Update)
++ void createButtonNameArr(String,String)
++ void parserArray(HashMap<String,String[]>)
++ void putInHash(HashMap<String,String[]>,String,String[])
++ void onUpdateReceived(Update)
++ String getBotUsername()
++ String getBotToken()
+- void executeMessage(T)
+- void executePhoto(SendPhoto)
+}
+interface TGMathLogic.Math {
+~ String parsingInfoArray(ArrayList<Integer>,TGOpenFile)
+}
+class TGLogic.SendMessageService {
+- TGButtonsLogic tgButtonsLogic
++ SendMessage createGreetingInformation(Update)
++ EditMessageText createInlineButtonsMessage(Update,String,ArrayList<String>,ArrayList<String>)
++ SendMessage createButtonsMessage(Update,String,ArrayList<String>,ArrayList<String>)
++ SendMessage createHelpMessage(Update)
+- SendMessage createSimpleMessage(Update,String)
+- SendPhoto createSimplePhoto(Update,File)
++ EditMessageText createExitMessage(Update,String)
+}
+class TGLogic.TGButtonsLogic {
++ ReplyKeyboardMarkup setButtons(List<KeyboardRow>)
++ List<KeyboardRow> createCommonButtons(List<String>)
++ InlineKeyboardButton createInlineButton(String,String)
++ InlineKeyboardMarkup setGenerateInlineKeybord(ArrayList<InlineKeyboardButton>)
+}
+class TGConstant.Constant {
++ {static} String JDBC_DRIVER
++ {static} String DB_URL
++ {static} String USER
++ {static} String PASS
++ {static} String TOKEN
++ {static} String USERNAME
++ {static} String GREETING_MESSAGE
++ {static} String START_DISEASES_MESSAGE
++ {static} String HELP_MESSAGE
++ {static} String START
++ {static} String START_PLANNING
++ {static} String HELP
+}
+class TGMathLogic.MathAddStrategy {
++ String parsingInfoArray(ArrayList<Integer>,TGOpenFile)
+}
+class DataBaseLogic.DataBaseConnection {
++ {static} Connection dbConnection()
++ {static} void updateDb(String)
+}
+class TGMathLogic.MathShareStrategy {
++ String parsingInfoArray(ArrayList<Integer>,TGOpenFile)
+}
+class TGMathLogic.MathMultiplyStrategy {
++ String parsingInfoArray(ArrayList<Integer>,TGOpenFile)
+}
+
+
+TGLogic.JFrame <|-- TGLogic.TGOpenFile
+org.telegram.telegrambots.bots.TelegramLongPollingBot <|-- TGController.TGJavaBotController
+TGMathLogic.Math <|.. TGMathLogic.MathAddStrategy
+TGMathLogic.Math <|.. TGMathLogic.MathShareStrategy
+TGMathLogic.Math <|.. TGMathLogic.MathMultiplyStrategy
+@enduml

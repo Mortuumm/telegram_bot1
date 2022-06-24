@@ -26,7 +26,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class TGOpenFile extends JFrame{
+interface DAOData{
+
+    NodeList getNode (Document doc,String name);
+    JSONArray getJson(JSONObject jsonObject, String name);
+    Row getRowExcel(XSSFSheet sheet, int num);
+}
+public class TGOpenFile extends JFrame implements DAOData{
     ArrayList<String> callDataArray = new ArrayList<>();
     ArrayList<String> questionArray = new ArrayList<>();
     ArrayList<String> diseaseNameArray = new ArrayList<>();
@@ -119,15 +125,15 @@ public class TGOpenFile extends JFrame{
         Cell NumberCell;
 
         Iterator<Row> rowIterator = sheet.iterator();
-        rowCallback = sheet.getRow(0);
-        rowQuestion = sheet.getRow(1);
-        rowDiseaseName =sheet.getRow(2);
-        rowButtonsName = sheet.getRow(3);
-        rowCallbackButtons = sheet.getRow(4);
-        rowMarks = sheet.getRow(5);
-        rowCritical = sheet.getRow(6);
-        rowHealth = sheet.getRow(7);
-        rowNumber= sheet.getRow(8);
+        rowCallback = getRowExcel(sheet,0);
+        rowQuestion = getRowExcel(sheet,1);
+        rowDiseaseName =getRowExcel(sheet,2);
+        rowButtonsName = getRowExcel(sheet,3);
+        rowCallbackButtons = getRowExcel(sheet,4);
+        rowMarks = getRowExcel(sheet,5);
+        rowCritical = getRowExcel(sheet,6);
+        rowHealth = getRowExcel(sheet,7);
+        rowNumber= getRowExcel(sheet,8);
         int nn = rowCritical.getLastCellNum();
         for (int i=1; i < rowCallback.getLastCellNum();i++){
             callBackCell = rowCallback.getCell(i);
@@ -201,15 +207,15 @@ public class TGOpenFile extends JFrame{
         try {
             FileReader file = new FileReader(path);
             JSONObject jsonObject = (JSONObject) jsonParser.parse(file);
-            JSONArray jsonCallBackArray = (JSONArray) jsonObject.get("CallBackНомер");
-            JSONArray jsonQuestionArray = (JSONArray) jsonObject.get("Вопрос");
-            JSONArray jsonDiseaseNameArray = (JSONArray) jsonObject.get("Название болезни");
-            JSONArray jsonButtonsNameArray = (JSONArray) jsonObject.get("Названия кнопок чере запятую");
-            JSONArray jsonCallBackButtonsArray = (JSONArray) jsonObject.get("CallBackДляСледующихКнопок через запятую");
-            JSONArray jsonMarksArray = (JSONArray) jsonObject.get("Баллы");
-            JSONArray jsonCriticalArray = (JSONArray) jsonObject.get("Критические пороги");
-            JSONArray jsonHealthArray = (JSONArray) jsonObject.get("Оценка здоровья");
-            JSONArray jsoNumberArray = (JSONArray) jsonObject.get("Номер телефона");
+            JSONArray jsonCallBackArray = getJson(jsonObject,"CallBackНомер");
+            JSONArray jsonQuestionArray = getJson(jsonObject,"Вопрос");
+            JSONArray jsonDiseaseNameArray = getJson(jsonObject,"Название болезни");
+            JSONArray jsonButtonsNameArray = getJson(jsonObject,"Названия кнопок чере запятую");
+            JSONArray jsonCallBackButtonsArray = getJson(jsonObject,"CallBackДляСледующихКнопок через запятую");
+            JSONArray jsonMarksArray = getJson(jsonObject,"Баллы");
+            JSONArray jsonCriticalArray = getJson(jsonObject,"Критические пороги");
+            JSONArray jsonHealthArray = getJson(jsonObject,"Оценка здоровья");
+            JSONArray jsoNumberArray = getJson(jsonObject,"Номер телефона");
 
             for(Object s: jsonCallBackArray){
                 callDataArray.add(String.valueOf(s));
@@ -265,16 +271,15 @@ public class TGOpenFile extends JFrame{
             Document document = builder.parse(fileXML);
 
             NodeList nameElement =  document.getElementsByTagName("Metrics");
-
-         callDataArray = setMetricArray(document.getElementsByTagName("CallBackНомер"),callDataArray);
-         questionArray = setMetricArray(document.getElementsByTagName("Вопрос"),questionArray);
-        diseaseNameArray = setMetricArray(document.getElementsByTagName("Название_болезни"),diseaseNameArray);
-       buttonsNameArray = setMetricArray(document.getElementsByTagName("Названия_кнопок_череp_запятую"),buttonsNameArray);
-       callBackButtonsArray = setMetricArray(document.getElementsByTagName("CallBackДляСледующихКнопок_через_запятую"),callBackButtonsArray);
-       marksArray = setMetricArray(document.getElementsByTagName("Баллы"),marksArray);
-       criticalArray = setMetricArray(document.getElementsByTagName("Критические_пороги"),criticalArray);
-       healthArray = setMetricArray(document.getElementsByTagName("Оценка_здоровья"),healthArray);
-       numberArray = setMetricArray(document.getElementsByTagName("Номер_телефона"),numberArray);
+        callDataArray = setMetricArray(getNode(document,"CallBackНомер"),callDataArray);
+         questionArray = setMetricArray(getNode(document,"Вопрос"),questionArray);
+        diseaseNameArray = setMetricArray(getNode(document,"Название_болезни"),diseaseNameArray);
+       buttonsNameArray = setMetricArray(getNode(document,"Названия_кнопок_череp_запятую"),buttonsNameArray);
+       callBackButtonsArray = setMetricArray(getNode(document,"CallBackДляСледующихКнопок_через_запятую"),callBackButtonsArray);
+       marksArray = setMetricArray(getNode(document,"Баллы"),marksArray);
+       criticalArray = setMetricArray(getNode(document,"Критические_пороги"),criticalArray);
+       healthArray = setMetricArray(getNode(document,"Оценка_здоровья"),healthArray);
+       numberArray = setMetricArray(getNode(document,"Номер_телефона"),numberArray);
         System.out.println(callBackButtonsArray);
 
     }
@@ -370,5 +375,26 @@ public class TGOpenFile extends JFrame{
 
     public ArrayList<String> getNumberArray() {
         return numberArray;
+    }
+
+
+
+
+    @Override
+    public NodeList getNode(Document doc, String name) {
+        NodeList node = doc.getElementsByTagName(name);
+        return node;
+    }
+
+    @Override
+    public JSONArray getJson(JSONObject jsonObject, String name) {
+        JSONArray jsonArray = (JSONArray) jsonObject.get(name);
+        return jsonArray;
+    }
+
+    @Override
+    public Row getRowExcel(XSSFSheet sheet, int num) {
+        Row row = sheet.getRow(num);
+        return row;
     }
 }
